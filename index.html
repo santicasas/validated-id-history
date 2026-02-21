@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Validated ID — Arxiu de Vídeos</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -28,23 +29,111 @@
     z-index: 100;
   }
 
-  .logo-text {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.5px;
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .logo-green { color: #00BF71; }
+
+  .logo-image {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
   .header-subtitle {
     font-size: 0.85rem;
     color: #8892b0;
     margin-left: 0.5rem;
   }
 
+  .header-network-nav {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .header-network-btn {
+    background: transparent;
+    border: 1px solid #2a3a5a;
+    color: #ccd6f6;
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .header-network-btn:hover {
+    border-color: #00BF71;
+    color: #00BF71;
+  }
+
+  .header-network-btn.active {
+    background: #00BF71;
+    border-color: #00BF71;
+    color: #0d1229;
+    cursor: default;
+  }
+
   .layout {
     display: flex;
     flex: 1;
     min-height: 0;
+  }
+
+  .network-selector {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .network-card {
+    background: #1e2a4a;
+    border: 1px solid #2a3a5a;
+    border-radius: 8px;
+    padding: 1.5rem;
+    width: min(420px, 100%);
+  }
+
+  .network-logo {
+    height: 34px;
+    width: auto;
+    display: block;
+    margin-bottom: 0.9rem;
+  }
+
+  .network-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e6f0ff;
+    margin-bottom: 0.75rem;
+  }
+
+  .network-btn {
+    width: 100%;
+    background: #00BF71;
+    color: #0d1229;
+    border: none;
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .network-options {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .network-note {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    color: #8892b0;
+    min-height: 1.2rem;
   }
 
   .sidebar {
@@ -217,17 +306,33 @@
 </head>
 <body>
 
-<header>
+<header id="archiveHeader" hidden>
   <div class="logo-area">
-    <span class="logo-text">Validated<span class="logo-green">ID</span></span>
-    <span class="header-subtitle">Arxiu de Vídeos · 2016–2025</span>
+    <img class="logo-image" src="assets/validated-id-logo-white-text-alt.webp" alt="Validated ID">
+    <span class="header-subtitle">Archivo de vídeos · <span id="selectedNetwork">Selecciona red social</span></span>
+  </div>
+  <div class="header-network-nav">
+    <button class="header-network-btn active" data-network-switch="youtube">YouTube</button>
+    <button class="header-network-btn" data-network-switch="linkedin">LinkedIn</button>
   </div>
 </header>
 
-<div class="layout">
+<section class="network-selector" id="networkSelector">
+  <div class="network-card">
+    <img class="network-logo" src="assets/validated-id-logo-white-text-alt.webp" alt="Validated ID">
+    <div class="network-title">Selecciona la red social a visualizar</div>
+    <div class="network-options">
+      <button class="network-btn" data-network="youtube">YouTube</button>
+      <button class="network-btn" data-network="linkedin">LinkedIn</button>
+    </div>
+    <div class="network-note" id="networkNote"></div>
+  </div>
+</section>
+
+<div class="layout" id="archiveLayout" hidden>
   <aside class="sidebar">
     <div class="filter-section">
-      <div class="filter-title">Any</div>
+      <div class="filter-title">Año</div>
       <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2016"> 2016</label>
       <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2017"> 2017</label>
       <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2019"> 2019</label>
@@ -246,7 +351,7 @@
       <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="DE"> Deutsch</label>
       <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="CA"> Català</label>
     </div>
-    <button class="clear-btn" onclick="clearFilters()">Netejar filtres</button>
+    <button class="clear-btn" onclick="clearFilters()">Limpiar filtros</button>
   </aside>
 
   <main>
@@ -1556,13 +1661,20 @@
   </main>
 </div>
 
-<footer>
-  Arxiu personal · Vídeos allotjats a <a href="https://archive.org" target="_blank">Internet Archive</a> · Validated ID (2016–2025)
+<footer id="archiveFooter" hidden>
+  Archivo personal · Vídeos alojados en <a href="https://archive.org" target="_blank">Internet Archive</a> · Validated ID (2016–2025)
 </footer>
 
 <script>
   const cards = Array.from(document.querySelectorAll('.card'));
   const countEl = document.getElementById('count');
+  const archiveHeaderEl = document.getElementById('archiveHeader');
+  const selectedNetworkEl = document.getElementById('selectedNetwork');
+  const networkSelectorEl = document.getElementById('networkSelector');
+  const networkNoteEl = document.getElementById('networkNote');
+  const archiveLayoutEl = document.getElementById('archiveLayout');
+  const archiveFooterEl = document.getElementById('archiveFooter');
+  const networkSwitchBtns = Array.from(document.querySelectorAll('.header-network-btn'));
 
   function getChecked(type) {
     return Array.from(document.querySelectorAll(`.filter-cb[data-type="${type}"]:checked`)).map(el => el.value);
@@ -1592,6 +1704,59 @@
 
   document.querySelectorAll('.filter-cb').forEach(cb => {
     cb.addEventListener('change', applyFilters);
+  });
+
+  function setActiveHeaderNetwork(network) {
+    networkSwitchBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.networkSwitch === network);
+    });
+  }
+
+  function showSelector(note = '') {
+    networkSelectorEl.hidden = false;
+    archiveHeaderEl.hidden = true;
+    archiveLayoutEl.hidden = true;
+    archiveFooterEl.hidden = true;
+    networkNoteEl.textContent = note;
+    selectedNetworkEl.textContent = 'Selecciona red social';
+    setActiveHeaderNetwork('youtube');
+  }
+
+  function openNetwork(network) {
+    if (network === 'linkedin') {
+      networkNoteEl.textContent = 'Próximamente';
+      return;
+    }
+
+    if (network !== 'youtube') {
+      networkNoteEl.textContent = '';
+      return;
+    }
+
+    networkNoteEl.textContent = '';
+    selectedNetworkEl.textContent = 'YouTube';
+    networkSelectorEl.hidden = true;
+    archiveHeaderEl.hidden = false;
+    archiveLayoutEl.hidden = false;
+    archiveFooterEl.hidden = false;
+    setActiveHeaderNetwork('youtube');
+    clearFilters();
+  }
+
+  document.querySelectorAll('.network-btn').forEach(btn => {
+    btn.addEventListener('click', () => openNetwork(btn.dataset.network));
+  });
+
+  networkSwitchBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const network = btn.dataset.networkSwitch;
+      if (network === 'youtube') {
+        return;
+      }
+      if (network === 'linkedin') {
+        showSelector('Próximamente');
+      }
+    });
   });
 </script>
 </body>
