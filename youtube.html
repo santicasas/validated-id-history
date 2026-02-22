@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validated ID — YouTube Vídeos</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #151A35;
+    color: #ccd6f6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: #0d1229;
+    border-bottom: 3px solid #00BF71;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo-image {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
+  .header-subtitle {
+    font-size: 0.85rem;
+    color: #8892b0;
+    margin-left: 0.5rem;
+  }
+
+  .header-network-nav {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .header-network-btn {
+    background: transparent;
+    border: 1px solid #2a3a5a;
+    color: #ccd6f6;
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .header-network-btn:hover {
+    border-color: #00BF71;
+    color: #00BF71;
+  }
+
+  .header-network-btn.active {
+    background: #00BF71;
+    border-color: #00BF71;
+    color: #0d1229;
+    cursor: default;
+  }
+
+  .layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: #0d1229;
+    padding: 1.5rem 1rem;
+    position: sticky;
+    top: 67px;
+    height: calc(100vh - 67px);
+    overflow-y: auto;
+    border-right: 1px solid #2a3a5a;
+  }
+
+  .filter-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #00BF71;
+    margin-bottom: 0.6rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: #ccd6f6;
+    user-select: none;
+  }
+  .checkbox-label:hover { color: #fff; }
+  .checkbox-label input[type=checkbox] {
+    accent-color: #00BF71;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  .clear-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #2a3a5a;
+    color: #8892b0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    margin-top: 0.5rem;
+    transition: all 0.2s;
+  }
+  .clear-btn:hover {
+    border-color: #00BF71;
+    color: #00BF71;
+  }
+
+  main {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    min-width: 0;
+  }
+
+  .results-bar {
+    font-size: 0.85rem;
+    color: #8892b0;
+    margin-bottom: 1rem;
+  }
+  .results-bar span { color: #00BF71; font-weight: 700; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: #1e2a4a;
+    border: 1px solid #2a3a5a;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: #00BF71;
+  }
+  .card.hidden { display: none; }
+
+  .video-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    background: #000;
+  }
+  .video-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .badges {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .badge-year {
+    background: #00BF71;
+    color: #0d1229;
+  }
+  .badge-lang {
+    background: #2a3a5a;
+    color: #ccd6f6;
+    border: 1px solid #3a4a6a;
+  }
+
+  .card-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #e6f0ff;
+    line-height: 1.3;
+    margin-bottom: 0.35rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-date {
+    font-size: 0.75rem;
+    color: #8892b0;
+  }
+
+  footer {
+    background: #0d1229;
+    border-top: 1px solid #2a3a5a;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #8892b0;
+  }
+  footer a { color: #00BF71; text-decoration: none; }
+
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <a href="index.html" title="Volver a inicio">
+      <img class="logo-image" src="assets/validated-id-logo-white-text-alt.webp" alt="Validated ID">
+    </a>
+    <span class="header-subtitle">Archivo de vídeos · YouTube</span>
+  </div>
+  <div class="header-network-nav">
+    <button class="header-network-btn active">YouTube</button>
+    <a href="linkedin.html" class="header-network-btn">LinkedIn</a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="filter-section">
+      <div class="filter-title">Año</div>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2016"> 2016</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2017"> 2017</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2019"> 2019</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2020"> 2020</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2021"> 2021</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2022"> 2022</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2023"> 2023</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2024"> 2024</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="2025"> 2025</label>
+    </div>
+    <div class="filter-section">
+      <div class="filter-title">Idioma</div>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="ES"> Español</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="EN"> English</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="FR"> Français</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="DE"> Deutsch</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="CA"> Català</label>
+    </div>
+    <button class="clear-btn" onclick="clearFilters()">Limpiar filtros</button>
+  </aside>
+
+  <main>
+    <div class="results-bar"><span id="count">100</span> vídeos</div>
+    <div class="grid" id="grid">
+    <div class="card" data-year="2016" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20161128-firmacontudniees?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2016</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">firmacontudnie.es</div>
+        <div class="card-date">28/11/2016</div>
+      </div>
+    </div>
+    <div class="card" data-year="2017" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20170110-vidsigner---administracin-sin-papeles?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2017</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">VIDsigner - Administración sin papeles</div>
+        <div class="card-date">10/01/2017</div>
+      </div>
+    </div>
+    <div class="card" data-year="2017" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20170526-docusign-integration?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2017</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">DocuSign integration</div>
+        <div class="card-date">26/05/2017</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190327-vididnetity-building-the-digital-identity-of-tomorrow?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDidnetity, building the digital identity of tomorrow</div>
+        <div class="card-date">27/03/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190418-ricdoc-docuware-centralized-signature?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">RIC.DOC DocuWare CENTRALIZED Signature</div>
+        <div class="card-date">18/04/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190418-ricdoc-docuware-remote-signature?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">RIC.DOC DocuWare REMOTE Signature</div>
+        <div class="card-date">18/04/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190426-foro-incyde?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">FORO INCYDE</div>
+        <div class="card-date">26/04/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190508-vidsigner-together-we-connect-better?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner, together we connect better</div>
+        <div class="card-date">08/05/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190513-send2sign-firma-electronica-digital?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Send2sign: Firma Electrónica Digital</div>
+        <div class="card-date">13/05/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190729-doctech-vidsigner-integration---2-documents?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">DocTech VIDsigner Integration - 2 Documents</div>
+        <div class="card-date">29/07/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20190729-doctech-vidsigner-integration-1-document-clipped?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">DocTech VIDsigner Integration   1 Document Clipped</div>
+        <div class="card-date">29/07/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191011-firma-digital-biometrica-para-salud-qbed-consulting?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Firma digital biometrica para salud: Qbed Consulting</div>
+        <div class="card-date">11/10/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191024-la-solucin-de-firma-digital-biomtrica-para-las-administracio?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">La solución de firma digital biométrica para las Administraciones Públicas</div>
+        <div class="card-date">24/10/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191028-remote-signature---for-anyone-and-anywhere?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Remote signature - FOR ANYONE AND ANYWHERE</div>
+        <div class="card-date">28/10/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191030-partners-dinner-madrid-2019?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Partners Dinner MADRID 2019</div>
+        <div class="card-date">30/10/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191104-caso-de-xito-en-cunit-firma-electrnica-para-aapp?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Caso de Éxito en Cunit: Firma electrónica para AAPP</div>
+        <div class="card-date">04/11/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191104-integracin-vidsigner-con-gladtolink-para-inspecciones-pblica?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración VIDsigner con Gladtolink para Inspecciones Públicas</div>
+        <div class="card-date">04/11/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191120-validated-id-and-mdoc-gmbh-enter-into-a-strategic-partnershi?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Validated ID and m.Doc GmbH enter into a strategic partnership</div>
+        <div class="card-date">20/11/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191212-caso-de-xito-en-parc-sanitari-sant-joan-de-du-firma-electron?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Caso de Éxito en Parc Sanitari Sant Joan de Déu: Firma electronica para Recursos Humanos</div>
+        <div class="card-date">12/12/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191213-success-case-of-parc-sanitari-sant-joan-de-du-electronic-sig?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Success Case of Parc Sanitari Sant Joan de Déu: Electronic signature for Human Resources</div>
+        <div class="card-date">13/12/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191216-biometric-signature---the-solution-for-face-to-face-scenario?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Biometric signature - the solution for face-to-face scenarios</div>
+        <div class="card-date">16/12/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191218-cas-dusage-du-parc-sanitari-sant-joan-de-du-signature-lectro?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Cas d'usage du Parc Sanitari Sant Joan de Déu: Signature électronique pour les Ressources Humaines</div>
+        <div class="card-date">18/12/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191218-erfolgsfall-des-parc-sanitari-sant-joan-de-du-elektronische?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Erfolgsfall des Parc Sanitari Sant Joan de Déu: Elektronische Signatur für Human Resources</div>
+        <div class="card-date">18/12/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2019" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20191224-zero-paper-commitment---weve-planted-over-100-trees-one-for?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2019</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Zero Paper commitment - We've planted over 100 trees, one for each one of our partners</div>
+        <div class="card-date">24/12/2019</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200107-biometrische-signatur---die-lsung-fr-prsenz-szenarien?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Biometrische Signatur - die Lösung für Präsenz-Szenarien</div>
+        <div class="card-date">07/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200107-firma-biomtrica---la-solucin-para-escenarios-presenciales?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Firma Biométrica - la solución para escenarios presenciales</div>
+        <div class="card-date">07/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200109-biometric-signature-solution-for-public-administrations?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Biometric signature solution for Public Administrations</div>
+        <div class="card-date">09/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200109-die-biometrische-digitale-signaturlsung-fr-ffentliche-verwal?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Die biometrische digitale Signaturlösung für öffentliche Verwaltungen</div>
+        <div class="card-date">09/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200109-firma-remote---para-cualquier-persona-y-en-cualquier-lugar?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Firma Remote - PARA CUALQUIER PERSONA Y EN CUALQUIER LUGAR</div>
+        <div class="card-date">09/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200109-remote-signature---fr-jeden-und-berall?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Remote signature - FÜR JEDEN UND ÜBERALL</div>
+        <div class="card-date">09/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200109-signature--distance---pour-nimporte-qui-et-nimporte-o?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Signature à distance - POUR N'IMPORTE QUI ET N'IMPORTE OÙ</div>
+        <div class="card-date">09/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200109-signatures-numriques-pour-les-administrations-publiques-et-m?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Signatures numériques pour les administrations publiques et mairies</div>
+        <div class="card-date">09/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200121-biometric-signature-integration-for-medical-software-ofimedi?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Biometric signature integration for medical software Ofimedic 7.3.1</div>
+        <div class="card-date">21/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="FR">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200123-signature-bio-la-solution-pour-les-scenarios-presentiels?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">FR 🇫🇷</span>
+        </div>
+        <div class="card-title">SIGNATURE BIO, LA SOLUTION POUR LES SCENARIOS PRESENTIELS</div>
+        <div class="card-date">23/01/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200217-vidsigner--la-faon-la-plus-sre-et-la-plus-facile-dobtenir-de?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">VIDsigner : LA FAÇON LA PLUS SÛRE ET LA PLUS FACILE D&#x27;OBTENIR DES SIGNATURES ÉLECTRONIQUES</div>
+        <div class="card-date">17/02/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200224-digital-future-congress--validated-id--optanium?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Digital Future Congress | Validated ID &amp; Optanium</div>
+        <div class="card-date">24/02/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200304-cnis-2020?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">CNIS 2020</div>
+        <div class="card-date">04/03/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200504-docuworld-2020---integration-der-digitalen-signatur-von-vali?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">DocuWorld 2020 - Integration der digitalen Signatur von Validated ID mit DocuWare</div>
+        <div class="card-date">04/05/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200504-docuworld-2020---validated-ids-digital-signatures-integratio?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">DocuWorld 2020 - Validated ID's digital signatures integration with Docuware</div>
+        <div class="card-date">04/05/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200527-webinar-ricsigner-firmas-digitales?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">[Webinar] RICsigner: Firmas digitales</div>
+        <div class="card-date">27/05/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200625-integration-between-success-factors-and-vidsigners-electroni?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Integration between Success Factors and VIDsigner&#x27;s electronic signatures for documents (Summary)</div>
+        <div class="card-date">25/06/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200713-vidsigner-la-forma-ms-segura-y-fcil-de-obtener-firmas-electr?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">VIDsigner: LA FORMA MÁS SEGURA Y FÁCIL DE OBTENER FIRMAS ELECTRÓNICAS</div>
+        <div class="card-date">13/07/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200714-integracin-de-la-firma-digital-vidsigner-con-salesforce?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Integración de la firma digital VIDsigner con Salesforce</div>
+        <div class="card-date">14/07/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200827-vidsigner-electronic-signatures-integrated-in-sage-x3?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner electronic signatures integrated in Sage X3</div>
+        <div class="card-date">27/08/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200902-integracin-send2sign-con-firmas-electrnicas-vidsigner-para-s?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración Send2sign con firmas electrónicas VIDsigner para Sharepoint</div>
+        <div class="card-date">02/09/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200907-integracin-de-firma-electrnica-vidsigner-con-autofirma?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración de firma electrónica VIDsigner con Autofirma</div>
+        <div class="card-date">07/09/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200921-firmas-electrnicas-vidsigner-integradas-en-sage-x3?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Firmas electrónicas VIDsigner integradas en Sage X3</div>
+        <div class="card-date">21/09/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200921-integracin-de-firma-digital-vidsigner-para-sage-200c?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración de firma digital VIDsigner para SAGE 200c</div>
+        <div class="card-date">21/09/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200921-integracion-de-firma-digital-vidsigner-para-sage-despachos-c?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integracion de firma digital VIDsigner para SAGE Despachos Connected</div>
+        <div class="card-date">21/09/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20200925-integracin-vidsigner-con-ricdoc?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración VIDsigner con RIC.DOC</div>
+        <div class="card-date">25/09/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201001-legalidad-de-la-firma-electronica-y-firma-digital-en-colombi?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Legalidad de la firma electrónica y firma digital en Colombia: VIDsigner</div>
+        <div class="card-date">01/10/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201005-ventajas-de-la-firma-electronica-con-summan--validated-id?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Ventajas de la firma electrónica con Summan &amp; Validated ID</div>
+        <div class="card-date">05/10/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201029-demo-firma-biometrica-en-simplifica-3-0?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">DEMO Firma biométrica en Simplifica 3 0</div>
+        <div class="card-date">29/10/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201111-cpia-de-ceres-2018-nuevas-tendencias-de-identidad-y-firma-de?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Copia de: CERES 2018 NUEVAS TENDENCIAS DE IDENTIDAD Y FIRMA  DE LA BIOMETRIA AL BLOCKCHAIN</div>
+        <div class="card-date">11/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201111-gestion-de-firmas-electronicas-vidsigner-con-sage-x3?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Gestión de firmas electrónicas VIDsigner con Sage X3</div>
+        <div class="card-date">11/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201112-demo-firma-biomtrica-desde-el-erp-e-satellite-de-freematica?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Demo firma biométrica desde el ERP e-Satellite de Freematica con el servicio de Validated ID</div>
+        <div class="card-date">12/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201112-demo-firma-remota-de-documentos-desde-el-erp-e-satellite-de?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Demo firma remota de documentos desde el ERP e-Satellite de Freematica con Validated ID</div>
+        <div class="card-date">12/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201117-remote-electronic-signature-with-send2sign?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Remote electronic signature with Send2sign</div>
+        <div class="card-date">17/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201117-vidsigner-digital-signature-integration-with-salesforce?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner digital signature integration with Salesforce</div>
+        <div class="card-date">17/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201125-integration-of-validated-id-remote-signature-with-swisscom?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Integration of Validated ID Remote signature with Swisscom</div>
+        <div class="card-date">25/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201126-firma-electrnica-en-jd-edwards-enterpriseone-con-send2sign?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Firma electrónica en JD Edwards EnterpriseOne con Send2sign</div>
+        <div class="card-date">26/11/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201204-elektronische-signatur-die-speziell-auf-die-anwendung-in-job?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Elektronische Signatur, die speziell auf die Anwendung in JobRouter abzielt</div>
+        <div class="card-date">04/12/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201214-integracion-entre-las-firmas-electronicas-de-validated-id-co?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración entre las firmas electrónicas de Validated ID con SAP S 4HANA y ECC</div>
+        <div class="card-date">14/12/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201214-integracin-entre-success-factors-y-la-firma-electrnica-de-do?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración entre Success Factors y la firma electrónica de documentos de VIDsigner (Extendida)</div>
+        <div class="card-date">14/12/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2020" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20201214-integracin-entre-success-factors-y-la-firma-electrnica-de-do?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2020</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración entre Success Factors y la firma electrónica de documentos de VIDsigner (Resumen)</div>
+        <div class="card-date">14/12/2020</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210111-integracin-firma-electrnica-con-dataflex?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Integración firma electrónica con DataFlex</div>
+        <div class="card-date">11/01/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210203-integracin-de-las-firmas-electrnicas-de-validated-id-y-sap-f?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Integración de las firmas electrónicas de Validated ID y SAP FIORI</div>
+        <div class="card-date">03/02/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210205-electronic-signature-integration-with-dataflex?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Electronic signature integration with DataFlex</div>
+        <div class="card-date">05/02/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210223-integration-of-the-electronic-signature-service-vidsigner-wi?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Integration of the electronic signature service VIDsigner with JobRouter</div>
+        <div class="card-date">23/02/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210428-swisscom-trust-services-und-validated-id?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Swisscom Trust Services und Validated ID</div>
+        <div class="card-date">28/04/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210430-vidsigner-biometric-signature-with-pdf-and-forensic?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">VIDsigner Biometric Signature with PDF and Forensic</div>
+        <div class="card-date">30/04/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210505-aspe-webinar-sobre-innovacin-tecnolgica-en-la-sanidad-privad?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">ASPE Webinar sobre Innovación Tecnológica en la Sanidad Privada</div>
+        <div class="card-date">05/05/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210514-signature-lectronique-spcifiquement-destine--tre-utilise-dan?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Signature électronique spécifiquement destinée à être utilisée dans JobRouter</div>
+        <div class="card-date">14/05/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210615-enva-firma-recibe-y-almacena-los-documentos-con-validated-id?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Envía, firma, recibe y almacena los documentos con Validated ID y OpenHR</div>
+        <div class="card-date">15/06/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="CA">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210818-vidsigner-remote-amb-idcat-mbil-vlid-pel-sector-pblic-cat?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">CAT</span>
+        </div>
+        <div class="card-title">VIDsigner Remote amb idCAT mòbil Vàlid pel sector públic CAT</div>
+        <div class="card-date">18/08/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210917-centralized-signature---the-easiest-way-to-sign-with-digital?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Centralized Signature - The easiest way to sign with digital certificate</div>
+        <div class="card-date">17/09/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210917-firma-centralizada---la-forma-ms-fcil-de-firmar-con-certific?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Firma centralizada - La forma más fácil de firmar con certificado digital</div>
+        <div class="card-date">17/09/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210917-signature-centralise---le-moyen-le-plus-simple-de-signer-ave?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Signature centralisée - Le moyen le plus simple de signer avec un certificat numérique</div>
+        <div class="card-date">17/09/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2021" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20210917-zentralisierte-signatur---der-einfachste-weg-um-mit-einem-di?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2021</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Zentralisierte Signatur - Der einfachste Weg, um mit einem digitalen Zertifikat zu unterschreiben</div>
+        <div class="card-date">17/09/2021</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220110-validated-id-vidchain-ebsi?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Validated ID_VIDchain EBSI</div>
+        <div class="card-date">10/01/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220120-caso-de-xito-universidad-de-finis-terrae-firma-electronica-e?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Caso de Éxito Universidad de Finis Terrae: Firma electronica en el sector educativo</div>
+        <div class="card-date">20/01/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220120-tude-de-cas-universit-de-finis-terrae--signature-lectronique?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Étude de cas Université de Finis Terrae : signature électronique dans le secteur de l&#x27;éducation</div>
+        <div class="card-date">20/01/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220120-success-story-with-finis-terrae-university-electronic-signat?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Success Story with Finis Terrae University: Electronic signature in the educational sector</div>
+        <div class="card-date">20/01/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="DE">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220228-die-erfolgsgeschichte-von-der-universitt-finis-terrae-elektr?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">DE 🇩🇪</span>
+        </div>
+        <div class="card-title">Die Erfolgsgeschichte von der Universität Finis Terrae: Elektronische Signaturen im Bildungssektor</div>
+        <div class="card-date">28/02/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220714-vidsigner-docs-de?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner DOCS DE</div>
+        <div class="card-date">14/07/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220714-vidsigner-docs-eng?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner DOCS ENG</div>
+        <div class="card-date">14/07/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220714-vidsigner-docs-esp?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner DOCS ESP</div>
+        <div class="card-date">14/07/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20220714-vidsigner-docs-fr?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDsigner DOCS FR</div>
+        <div class="card-date">14/07/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2022" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20221003-firma-digital-vidsigner-integrada-en-ekon?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2022</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Firma Digital VIDsigner integrada en Ekon</div>
+        <div class="card-date">03/10/2022</div>
+      </div>
+    </div>
+    <div class="card" data-year="2023" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20230411-vidwallet-and-vidsigner-centralized?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2023</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDwallet and VIDsigner Centralized</div>
+        <div class="card-date">11/04/2023</div>
+      </div>
+    </div>
+    <div class="card" data-year="2023" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20230926-star4big-validated-id?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2023</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">star4big Validated ID</div>
+        <div class="card-date">26/09/2023</div>
+      </div>
+    </div>
+    <div class="card" data-year="2023" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20231031-clnica-cemtro-y-vidwallet?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2023</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Clínica CEMTRO y VIDwallet</div>
+        <div class="card-date">31/10/2023</div>
+      </div>
+    </div>
+    <div class="card" data-year="2023" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20231031-video-vidpartners-2023?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2023</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Video VIDpartners 2023</div>
+        <div class="card-date">31/10/2023</div>
+      </div>
+    </div>
+    <div class="card" data-year="2024" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20240201-clnica-cemtro---proceso-de-autoadminisin-de-pacientes-fisioc?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2024</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Clínica CEMTRO - Proceso de autoadmisión de pacientes FisioClub &amp; Sports</div>
+        <div class="card-date">01/02/2024</div>
+      </div>
+    </div>
+    <div class="card" data-year="2024" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20240201-trussihealth-demo?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2024</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">TRUSSIHEALTH Demo</div>
+        <div class="card-date">01/02/2024</div>
+      </div>
+    </div>
+    <div class="card" data-year="2024" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20240305-firma-electrnica-integradas-con-docuware?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2024</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">Firma electrónica integradas con DocuWare</div>
+        <div class="card-date">05/03/2024</div>
+      </div>
+    </div>
+    <div class="card" data-year="2024" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20240828-vididentity-construyendo-la-identidad-digital-del-maana?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2024</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">VIDidentity, construyendo la identidad digital del mañana</div>
+        <div class="card-date">28/08/2024</div>
+      </div>
+    </div>
+    <div class="card" data-year="2024" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20240917-vidchain-passport-id-mwc-24?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2024</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">VIDchain PASSPORT ID MWC 24</div>
+        <div class="card-date">17/09/2024</div>
+      </div>
+    </div>
+    <div class="card" data-year="2024" data-lang="ES">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20241015-vidpartners-2024-evento-anual-de-partners-de-validated-id?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2024</span>
+          <span class="badge badge-lang">ES 🇪🇸</span>
+        </div>
+        <div class="card-title">VIDpartners 2024 Evento anual de Partners de Validated ID</div>
+        <div class="card-date">15/10/2024</div>
+      </div>
+    </div>
+    <div class="card" data-year="2025" data-lang="EN">
+      <div class="video-wrap">
+        <iframe src="https://archive.org/embed/validatedid-20250527-electronic-signature-of-delivery-notes-in-sharepoint--vidsig?ui-theme=dark" loading="lazy" allowfullscreen frameborder="0"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="badges">
+          <span class="badge badge-year">2025</span>
+          <span class="badge badge-lang">EN 🇬🇧</span>
+        </div>
+        <div class="card-title">Electronic signature of Delivery Notes in SharePoint | VIDsigner integration by Nextret</div>
+        <div class="card-date">27/05/2025</div>
+      </div>
+    </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  Archivo personal · Vídeos alojados en <a href="https://archive.org" target="_blank">Internet Archive</a> · Validated ID (2016–2025)
+</footer>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const countEl = document.getElementById('count');
+
+  function getChecked(type) {
+    return Array.from(document.querySelectorAll(`.filter-cb[data-type="${type}"]:checked`)).map(el => el.value);
+  }
+
+  function applyFilters() {
+    const years = getChecked('year');
+    const langs = getChecked('lang');
+    let visible = 0;
+    cards.forEach(card => {
+      const yearOk = years.length === 0 || years.includes(card.dataset.year);
+      const langOk = langs.length === 0 || langs.includes(card.dataset.lang);
+      if (yearOk && langOk) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    countEl.textContent = visible;
+  }
+
+  function clearFilters() {
+    document.querySelectorAll('.filter-cb').forEach(cb => cb.checked = false);
+    applyFilters();
+  }
+
+  document.querySelectorAll('.filter-cb').forEach(cb => {
+    cb.addEventListener('change', applyFilters);
+  });
+</script>
+</body>
+</html>
