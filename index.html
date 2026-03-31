@@ -48,11 +48,24 @@
   }
 
   .header-subtitle {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #8892b0;
-    display: block;
-    margin-top: -2px;
+    margin-left: 0.5rem;
   }
+
+  .header-network-nav { margin-left: auto; display: flex; gap: 0.5rem; }
+  .header-network-btn {
+    background: transparent;
+    border: 1px solid #2a3a5a;
+    color: #ccd6f6;
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .header-network-btn:hover { border-color: #00BF71; color: #00BF71; }
 
   main {
     flex: 1;
@@ -249,9 +262,12 @@
 <header>
   <div class="logo-area">
     <img class="logo-image" src="assets/validated-id-logo-white-text-alt.webp" alt="Validated ID">
-    <span>
-      <span class="header-subtitle">Archivo de la Historia</span>
-    </span>
+    <span class="header-subtitle">Archivo histórico</span>
+  </div>
+  <div class="header-network-nav">
+    <a href="youtube.html" class="header-network-btn">YouTube</a>
+    <a href="linkedin.html" class="header-network-btn">LinkedIn</a>
+    <a href="imatges.html" class="header-network-btn">Imágenes</a>
   </div>
 </header>
 
@@ -277,7 +293,13 @@
         <div class="network-icon">💼</div>
         <div class="network-name">LinkedIn</div>
         <div class="network-description">Contenido profesional, case studies e insights del sector</div>
-        <div class="network-count">Próximamente</div>
+        <div class="network-count">1.784 publicaciones</div>
+      </a>
+      <a href="imatges.html" class="network-card">
+        <div class="network-icon">🖼️</div>
+        <div class="network-name">Imágenes</div>
+        <div class="network-description">Galería unificada de imágenes de todas las redes sociales</div>
+        <div class="network-count">613 imágenes</div>
       </a>
     </div>
 
