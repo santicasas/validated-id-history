@@ -4,6 +4,7 @@ Llegeix els fitxers data/*.json i genera les pàgines HTML del projecte.
 
 Pàgines generades:
   - linkedin.html   Posts de LinkedIn paginats
+  - instagram.html  Posts d'Instagram paginats
   - imatges.html    Galeria unificada d'imatges de totes les xarxes
 
 Ús:
@@ -15,7 +16,7 @@ import os
 from html import escape
 
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
-NETWORKS_AVAILABLE = ['linkedin']   # afegir 'twitter', 'instagram', 'facebook' quan estiguin
+NETWORKS_AVAILABLE = ['linkedin', 'instagram']   # afegir 'twitter', 'facebook' quan estiguin
 
 CONTENT_TYPE_LABELS = {
     'article':    '📰 Artículo',
@@ -25,6 +26,20 @@ CONTENT_TYPE_LABELS = {
     'reference':  '🔗 Referencia',
     'carousel':   '🎠 Carrusel',
     'poll':       '📊 Encuesta',
+    # Instagram
+    'image':      '📷 Imagen',
+    'sidecar':    '🖼️ Galería',
+    'video':      '🎬 Vídeo',
+}
+
+NETWORK_TITLES = {
+    'linkedin':  'LinkedIn · Publicaciones',
+    'instagram': 'Instagram · Publicaciones',
+}
+
+NETWORK_PAGE_NAMES = {
+    'linkedin':  'LinkedIn',
+    'instagram': 'Instagram',
 }
 
 NETWORK_LABELS = {
@@ -164,9 +179,10 @@ COMMON_CSS = """
 
 def html_header(subtitle, active_page):
     nav_pages = [
-        ('youtube.html', 'YouTube'),
-        ('linkedin.html', 'LinkedIn'),
-        ('imatges.html', 'Imágenes'),
+        ('youtube.html',   'YouTube'),
+        ('linkedin.html',  'LinkedIn'),
+        ('instagram.html', 'Instagram'),
+        ('imatges.html',   'Imágenes'),
     ]
     buttons = ''
     for href, label in nav_pages:
@@ -203,9 +219,12 @@ def network_filter_html(networks):
     return html
 
 
-# ── GENERADOR: linkedin.html ───────────────────────────────────────────────────
-def generate_linkedin(posts):
+# ── GENERADOR: pàgina per xarxa (LinkedIn, Instagram, ...) ────────────────────
+def generate_network_page(network, posts):
     years = get_years(posts)
+
+    page_name  = NETWORK_PAGE_NAMES.get(network, network.capitalize())
+    page_title = NETWORK_TITLES.get(network, f'{page_name} · Publicaciones')
 
     # Preparem les dades per al JS (text complet, sense truncar)
     js_posts = []
@@ -217,7 +236,8 @@ def generate_linkedin(posts):
             'type':    p.get('content_type', 'none'),
             'text':    p['text'],
             'images':  p['images'],
-            'video':   p.get('video'),   # None o {archive_id, embed_url, thumbnail_url, title}
+            'video':   p.get('video'),
+            'url':     p.get('url'),
             'pageRef': p['page_ref'],
         })
 
@@ -235,7 +255,7 @@ def generate_linkedin(posts):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Validated ID — LinkedIn</title>
+<title>Validated ID — {page_name}</title>
 <style>
 {COMMON_CSS}
 
@@ -420,7 +440,7 @@ def generate_linkedin(posts):
 </head>
 <body>
 
-{html_header('LinkedIn · Publicaciones', 'LinkedIn')}
+{html_header(page_title, page_name)}
 
 <div class="layout">
   <aside class="sidebar">
@@ -520,6 +540,7 @@ function postHTML(p) {{
   const textHTML = p.text
     ? `<div class="post-text">${{escHTML(p.text)}}</div>`
     : `<div class="post-text no-text">(sin texto)</div>`;
+  const urlHTML = '';
 
   // Imatges (columna dreta): mostrem totes apilades
   let mediaColHTML = '';
@@ -552,7 +573,7 @@ function postHTML(p) {{
       <span class="post-date">${{p.date}}</span>
     </div>
     <div class="post-body">
-      <div class="post-text-col">${{textHTML}}</div>
+      <div class="post-text-col">${{textHTML}}${{urlHTML}}</div>
       ${{mediaCol}}
     </div>
   </div>`;
@@ -1020,15 +1041,19 @@ if __name__ == '__main__':
     # Ordenem tots els posts per data
     all_posts.sort(key=lambda p: p['date'])
 
-    # Generem les pàgines
-    print('\nGenerant linkedin.html...')
-    linkedin_posts = [p for p in all_posts if p['network'] == 'linkedin']
-    with open('linkedin.html', 'w', encoding='utf-8') as f:
-        f.write(generate_linkedin(linkedin_posts))
-    size = os.path.getsize('linkedin.html') / 1024
-    print(f'✓ linkedin.html ({size:.0f} KB, {len(linkedin_posts)} posts)')
+    # Generem les pàgines per xarxa
+    for network in NETWORKS_AVAILABLE:
+        net_posts = [p for p in all_posts if p['network'] == network]
+        if not net_posts:
+            continue
+        filename = f'{network}.html'
+        print(f'\nGenerant {filename}...')
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(generate_network_page(network, net_posts))
+        size = os.path.getsize(filename) / 1024
+        print(f'✓ {filename} ({size:.0f} KB, {len(net_posts)} posts)')
 
-    print('Generant imatges.html...')
+    print('\nGenerant imatges.html...')
     with open('imatges.html', 'w', encoding='utf-8') as f:
         f.write(generate_imatges(all_posts))
     posts_with_images = len([p for p in all_posts if p['images']])
