@@ -1060,7 +1060,7 @@ def load_facebook_videos():
             'title':         v['title'],
             'date':          dt.strftime('%d/%m/%Y'),
             'year':          dt.strftime('%Y'),
-            'lang':          '',
+            'lang':          v.get('lang', ''),
         })
     return result
 
