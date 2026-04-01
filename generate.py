@@ -19,11 +19,6 @@ from datetime import datetime, timezone
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
 NETWORKS_AVAILABLE = ['linkedin', 'instagram', 'facebook']
 
-# Xarxes on els posts es mostren de més recent a més antic
-NETWORK_SORT_REVERSE = {
-    'facebook': True,
-}
-
 CONTENT_TYPE_LABELS = {
     'article':    '📰 Artículo',
     'media':      '📷 Imagen',
@@ -1388,17 +1383,14 @@ if __name__ == '__main__':
         print('Cap dada disponible. Abort.')
         sys.exit(1)
 
-    # Ordenem tots els posts per data cronològica (YYYYMMDD)
-    all_posts.sort(key=date_sort_key)
+    # Ordenem tots els posts de més recent a més antic
+    all_posts.sort(key=date_sort_key, reverse=True)
 
     # Generem les pàgines per xarxa
     for network in NETWORKS_AVAILABLE:
         net_posts = [p for p in all_posts if p['network'] == network]
         if not net_posts:
             continue
-        # Algunes xarxes es mostren de més recent a més antic
-        if NETWORK_SORT_REVERSE.get(network, False):
-            net_posts = list(reversed(net_posts))
         filename = f'{network}.html'
         print(f'\nGenerant {filename}...')
         with open(filename, 'w', encoding='utf-8') as f:
