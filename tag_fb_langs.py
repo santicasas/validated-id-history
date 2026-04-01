@@ -18,7 +18,11 @@ def detect_lang(title):
     if re.search(r'\b(también|más|está|están|nuestro|nuestra|gracias|para|que|los|las|del|por|hoy|vuelve|siempre|ahora|todo|todos|cómo|qué|puede|permite|permiten|sigue|igual|nuevo|nueva|desde|datos|firma|firmar|inscríbete|descubre|comunícate)\b', t, re.I):
         return 'ES'
 
-    # Alemany: Umlauts o paraules úniques
+    # Anglès: paraules de funció exclusivament angleses (comprova ABANS dels umlauts)
+    if re.search(r'\b(we|our|us|you|your|the|this|that|there|with|from|have|been|will|find|meet|get|did|know|want|take|like|share|create|help|today|great|week|year|never|short|why|perfect)\b', t, re.I):
+        return 'EN'
+
+    # Alemany: Umlauts en text (no nom propi aïllat) o paraules úniques
     if re.search(r'[üÜöÖäÄß]', t):
         return 'DE'
     if re.search(r'\b(Die|Der|Das|Ein|Eine|Alle|Als|Um|Wir|und|mit|für|von|im|zur|ist|sind|Daten|Rahmen|Zusammen|Partnerschaft|internationaler|Partner)\b', t):
