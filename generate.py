@@ -84,10 +84,14 @@ def truncate(text, length=280):
     return text[:length].rstrip() + '…'
 
 def date_sort_key(p):
-    """Clau d'ordenació cronològica per a dates DD/MM/YYYY."""
+    """Clau d'ordenació cronològica. Suporta YYYY-MM-DD i DD/MM/YYYY."""
     d = p['date']
     try:
-        return d[6:10] + d[3:5] + d[0:2]   # YYYYMMDD
+        if len(d) == 10 and d[4] == '-':
+            return d.replace('-', '')           # YYYY-MM-DD → YYYYMMDD (ja ordenable)
+        elif len(d) == 10 and d[2] == '/':
+            return d[6:] + d[3:5] + d[:2]      # DD/MM/YYYY → YYYYMMDD
+        return d
     except Exception:
         return '00000000'
 
