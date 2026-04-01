@@ -83,8 +83,16 @@ def truncate(text, length=280):
         return text
     return text[:length].rstrip() + '…'
 
+def date_sort_key(p):
+    """Clau d'ordenació cronològica per a dates DD/MM/YYYY."""
+    d = p['date']
+    try:
+        return d[6:10] + d[3:5] + d[0:2]   # YYYYMMDD
+    except Exception:
+        return '00000000'
+
 def get_years(posts):
-    return sorted(set(p['year'] for p in posts))
+    return sorted(set(p['year'] for p in posts), reverse=True)   # de més recent a més antic
 
 
 # ── COMPONENTS HTML COMUNS ─────────────────────────────────────────────────────
@@ -1093,13 +1101,15 @@ def generate_videos():
     for y in years:
         year_filters_html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="{y}"> {y}</label>\n'
 
-    # Filtres d'idioma
+    # Filtres d'idioma — ordre per freqüència
     lang_labels = {
         'ES': 'ES 🇪🇸', 'EN': 'EN 🇬🇧', 'DE': 'DE 🇩🇪',
         'FR': 'FR 🇫🇷', 'CA': 'CAT', 'CAT': 'CAT',
     }
+    lang_order = ['ES', 'EN', 'DE', 'FR', 'CA', 'CAT']
+    langs_sorted = sorted(langs, key=lambda l: lang_order.index(l) if l in lang_order else 99)
     lang_filters_html = ''
-    for lang in langs:
+    for lang in langs_sorted:
         label = lang_labels.get(lang, lang)
         lang_filters_html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="{esc(lang)}"> {label}</label>\n'
 
@@ -1374,8 +1384,8 @@ if __name__ == '__main__':
         print('Cap dada disponible. Abort.')
         sys.exit(1)
 
-    # Ordenem tots els posts per data
-    all_posts.sort(key=lambda p: p['date'])
+    # Ordenem tots els posts per data cronològica (YYYYMMDD)
+    all_posts.sort(key=date_sort_key)
 
     # Generem les pàgines per xarxa
     for network in NETWORKS_AVAILABLE:
