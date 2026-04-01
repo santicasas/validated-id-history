@@ -24,6 +24,7 @@ import json
 import glob
 import re
 from datetime import datetime, timezone
+from lang_detect import detect_lang
 
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -177,6 +178,7 @@ def parse_posts():
             'date':         date_str,
             'year':         year_str,
             'text':         post_text,
+            'lang':         detect_lang(post_text),
             'images':       images,
             'video':        video,
             'url':          None,

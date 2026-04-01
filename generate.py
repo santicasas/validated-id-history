@@ -230,6 +230,24 @@ def year_filter_html(years):
         html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="{y}"> {y}</label>\n'
     return html
 
+LANG_LABELS = {
+    'ES': 'ES 🇪🇸', 'EN': 'EN 🇬🇧', 'DE': 'DE 🇩🇪',
+    'FR': 'FR 🇫🇷', 'CA': 'CA 🟨', 'PT': 'PT 🇵🇹',
+}
+LANG_ORDER = ['ES', 'EN', 'DE', 'FR', 'CA', 'PT']
+
+def lang_filter_html(langs):
+    langs_sorted = sorted(langs, key=lambda l: LANG_ORDER.index(l) if l in LANG_ORDER else 99)
+    html = ''
+    for l in langs_sorted:
+        label = LANG_LABELS.get(l, l)
+        html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="{esc(l)}"> {label}</label>\n'
+    return html
+
+def get_langs(posts):
+    return sorted(set(p.get('lang','') for p in posts if p.get('lang','')),
+                  key=lambda l: LANG_ORDER.index(l) if l in LANG_ORDER else 99)
+
 def network_filter_html(networks):
     html = ''
     for n in networks:
@@ -241,6 +259,7 @@ def network_filter_html(networks):
 # ── GENERADOR: pàgina per xarxa (LinkedIn, Instagram, ...) ────────────────────
 def generate_network_page(network, posts):
     years = get_years(posts)
+    langs = get_langs(posts)
 
     page_name  = NETWORK_PAGE_NAMES.get(network, network.capitalize())
     page_title = NETWORK_TITLES.get(network, f'{page_name} · Publicaciones')
@@ -252,6 +271,7 @@ def generate_network_page(network, posts):
             'anchor':  p['anchor'],
             'date':    p['date'],
             'year':    p['year'],
+            'lang':    p.get('lang', ''),
             'type':    p.get('content_type', 'none'),
             'text':    p['text'],
             'images':  p['images'],
@@ -264,7 +284,8 @@ def generate_network_page(network, posts):
 
     content_type_labels_js = json.dumps(CONTENT_TYPE_LABELS, ensure_ascii=False)
 
-    year_filters = year_filter_html(years)
+    year_filters  = year_filter_html(years)
+    lang_filters  = lang_filter_html(langs)
 
     media_filters = """<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="media" value="images"> Con imágenes</label>
 <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="media" value="video"> Con vídeo</label>"""
@@ -471,6 +492,10 @@ def generate_network_page(network, posts):
       <div class="filter-title">Contenido</div>
       {media_filters}
     </div>
+    <div class="filter-section">
+      <div class="filter-title">Idioma</div>
+      {lang_filters}
+    </div>
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
 
@@ -510,10 +535,12 @@ let lbIdx = 0;
 function applyFilters() {{
   const years  = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
   const media  = new Set([...document.querySelectorAll('.filter-cb[data-type=media]:checked')].map(c => c.value));
+  const langs  = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
   filtered = POSTS.filter(p => {{
     if (years.size > 0 && !years.has(p.year)) return false;
     if (media.has('images') && p.images.length === 0) return false;
     if (media.has('video')  && !p.video)              return false;
+    if (langs.size > 0 && !langs.has(p.lang))         return false;
     return true;
   }});
   currentPage = 0;
@@ -750,6 +777,7 @@ def generate_imatges(all_posts):
     posts_with_images = [p for p in all_posts if p['images']]
     years    = get_years(posts_with_images)
     networks = sorted(set(p['network'] for p in posts_with_images))
+    langs    = get_langs(posts_with_images)
 
     # Dades mínimes per al JS
     js_posts = []
@@ -759,6 +787,7 @@ def generate_imatges(all_posts):
             'network':  p['network'],
             'date':     p['date'],
             'year':     p['year'],
+            'lang':     p.get('lang', ''),
             'caption':  truncate(p['text'], 200),
             'images':   p['images'],
             'pageRef':  p['page_ref'],
@@ -770,6 +799,7 @@ def generate_imatges(all_posts):
 
     year_filters    = year_filter_html(years)
     network_filters = network_filter_html(networks)
+    lang_filters_im = lang_filter_html(langs)
 
     html = f"""<!DOCTYPE html>
 <html lang="es">
@@ -893,6 +923,10 @@ def generate_imatges(all_posts):
       <div class="filter-title">Red</div>
       {network_filters}
     </div>
+    <div class="filter-section">
+      <div class="filter-title">Idioma</div>
+      {lang_filters_im}
+    </div>
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
 
@@ -930,9 +964,11 @@ let lbIdx = 0;
 function applyFilters() {{
   const years    = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
   const networks = new Set([...document.querySelectorAll('.filter-cb[data-type=network]:checked')].map(c => c.value));
+  const langs    = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
   filtered = POSTS.filter(p =>
     (years.size    === 0 || years.has(p.year)) &&
-    (networks.size === 0 || networks.has(p.network))
+    (networks.size === 0 || networks.has(p.network)) &&
+    (langs.size    === 0 || langs.has(p.lang))
   );
   renderGrid();
 }}

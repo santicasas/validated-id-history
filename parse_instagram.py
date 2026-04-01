@@ -10,6 +10,7 @@ import glob
 import lzma
 import re
 from datetime import datetime, timezone
+from lang_detect import detect_lang
 
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
 BACKUP_DIR   = r'C:\Users\santi\Dropbox\Social VID\Instagram\instagram_validatedid\validatedid'
@@ -99,6 +100,7 @@ def parse_posts():
             'date':         date_str,
             'year':         date_str[:4],
             'text':         caption,
+            'lang':         detect_lang(caption),
             'images':       images,
             'video':        None,
             'url':          url,

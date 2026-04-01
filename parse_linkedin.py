@@ -9,6 +9,7 @@ import os
 import glob
 import re
 from datetime import datetime, timezone
+from lang_detect import detect_lang
 
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
 BACKUP_DIR   = r'C:\Users\santi\Dropbox\Social VID\Linkedin\backup'
@@ -116,6 +117,7 @@ def parse_posts():
                 'date':         date_str,
                 'year':         date_str[:4],
                 'text':         clean_text(post.get('commentary', '')),
+                'lang':         detect_lang(clean_text(post.get('commentary', ''))),
                 'images':       images,
                 'video':        video,  # None o {archive_id, embed_url, thumbnail_url, title}
                 'url':          None,
