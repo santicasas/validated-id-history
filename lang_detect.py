@@ -37,7 +37,7 @@ _CODE_MAP = {
 MIN_TEXT_LEN = 40
 
 # Patrons que eliminem perquè no aporten informació lingüística
-# (URLs, hashtags, mencions, emojis de bandera, caràcters de control Unicode)
+# (URLs, hashtags, mencions, caràcters de control Unicode)
 _STRIP_RE = re.compile(
     r'https?://\S+'           # URLs
     r'|www\.\S+'              # URLs sense protocol
@@ -49,10 +49,28 @@ _STRIP_RE = re.compile(
     , re.UNICODE
 )
 
+# Seqüències de 3+ paraules en Title Case (noms propis: persones, institucions,
+# llocs) que poden enganyar el detector quan el text és en un altre idioma.
+# Exemples: "Ajuntament de Terrassa", "Generalitat de Catalunya", "Open Government of Catalonia"
+# S'eliminen les cadenes de ≥3 paraules on cada paraula comença per majúscula,
+# permetent connectors minúsculs entre elles (de, del, of, the, van, i, etc.)
+_CONNECTOR = r'(?:de|del|dels|d\'|la|les|el|els|i|of|the|and|for|van|von|der|di|le|du|des|al|als|da|do|dos|das|a|en|y|e|mit|und|et|ou)\s+'
+_CAP_WORD   = r'[A-ZÁÉÍÓÚÀÈÌÒÙÄÖÜÑÇ\u00C0-\u024F][a-záéíóúàèìòùäöüñç\u00C0-\u024F\w]*'
+_PROPER_RE  = re.compile(
+    r'(?:' + _CAP_WORD + r'\s+(?:' + _CONNECTOR + r')?)' + r'{2,}' + _CAP_WORD,
+    re.UNICODE
+)
+
 
 def _clean_for_detection(text: str) -> str:
-    """Elimina elements idiomàticament neutres del text per millorar la detecció."""
+    """Elimina elements idiomàticament neutres del text per millorar la detecció.
+
+    - URLs, hashtags, mencions, caràcters de control Unicode
+    - Seqüències de ≥3 paraules en Title Case (noms propis de persones/llocs/entitats)
+    """
     cleaned = _STRIP_RE.sub(' ', text)
+    # Strip proper noun chains (3+ consecutive capitalized words / with connectors)
+    cleaned = _PROPER_RE.sub(' ', cleaned)
     # Comprimeix espais múltiples i línies en blanc
     cleaned = re.sub(r'[ \t]+', ' ', cleaned)
     cleaned = re.sub(r'\n{2,}', '\n', cleaned)
@@ -64,8 +82,8 @@ def detect_lang(text: str) -> str:
     Retorna el codi d'idioma de 2 lletres (ES, EN, DE, FR, CA, PT)
     o '' si el text és massa curt o la confiança és baixa.
 
-    Primer neteja el text (URLs, hashtags, mencions, caràcters de control)
-    per reduir falsos positius entre llengües similars (ES/PT, ES/CA, EN/DE).
+    Primer neteja el text (URLs, hashtags, mencions, caràcters de control,
+    noms propis) per reduir falsos positius entre llengües similars.
     """
     if not text:
         return ''
