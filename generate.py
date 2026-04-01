@@ -17,7 +17,12 @@ from html import escape
 from datetime import datetime, timezone
 
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
-NETWORKS_AVAILABLE = ['linkedin', 'instagram']   # afegir 'twitter', 'facebook' quan estiguin
+NETWORKS_AVAILABLE = ['linkedin', 'instagram', 'facebook']
+
+# Xarxes on els posts es mostren de més recent a més antic
+NETWORK_SORT_REVERSE = {
+    'facebook': True,
+}
 
 CONTENT_TYPE_LABELS = {
     'article':    '📰 Artículo',
@@ -31,16 +36,21 @@ CONTENT_TYPE_LABELS = {
     'image':      '📷 Imagen',
     'sidecar':    '🖼️ Galería',
     'video':      '🎬 Vídeo',
+    # Facebook
+    'photo':      '📷 Foto',
+    'multiPhoto': '🖼️ Álbum',
 }
 
 NETWORK_TITLES = {
     'linkedin':  'LinkedIn · Publicaciones',
     'instagram': 'Instagram · Publicaciones',
+    'facebook':  'Facebook · Publicaciones',
 }
 
 NETWORK_PAGE_NAMES = {
     'linkedin':  'LinkedIn',
     'instagram': 'Instagram',
+    'facebook':  'Facebook',
 }
 
 NETWORK_LABELS = {
@@ -183,6 +193,7 @@ def html_header(subtitle, active_page):
         ('videos.html',    'Vídeos'),
         ('linkedin.html',  'LinkedIn'),
         ('instagram.html', 'Instagram'),
+        ('facebook.html',  'Facebook'),
         ('imatges.html',   'Imágenes'),
     ]
     buttons = ''
@@ -1371,6 +1382,9 @@ if __name__ == '__main__':
         net_posts = [p for p in all_posts if p['network'] == network]
         if not net_posts:
             continue
+        # Algunes xarxes es mostren de més recent a més antic
+        if NETWORK_SORT_REVERSE.get(network, False):
+            net_posts = list(reversed(net_posts))
         filename = f'{network}.html'
         print(f'\nGenerant {filename}...')
         with open(filename, 'w', encoding='utf-8') as f:
