@@ -14,6 +14,7 @@ Pàgines generades:
 import json
 import os
 from html import escape
+from datetime import datetime, timezone
 
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
 NETWORKS_AVAILABLE = ['linkedin', 'instagram']   # afegir 'twitter', 'facebook' quan estiguin
@@ -179,7 +180,7 @@ COMMON_CSS = """
 
 def html_header(subtitle, active_page):
     nav_pages = [
-        ('youtube.html',   'YouTube'),
+        ('videos.html',    'Vídeos'),
         ('linkedin.html',  'LinkedIn'),
         ('instagram.html', 'Instagram'),
         ('imatges.html',   'Imágenes'),
@@ -1023,6 +1024,325 @@ renderGrid();
     return html
 
 
+# ── GENERADOR: videos.html ────────────────────────────────────────────────────
+def load_facebook_videos():
+    """Carrega i normalitza els vídeos de Facebook."""
+    path = 'data/videos_facebook.json'
+    if not os.path.exists(path):
+        return []
+    data = load_json(path)
+    result = []
+    for filename, v in data.items():
+        ts = v.get('timestamp', 0)
+        dt = datetime.fromtimestamp(ts, tz=timezone.utc)
+        result.append({
+            'source':        'facebook',
+            'archive_id':    v['archive_id'],
+            'embed_url':     v['embed_url'],
+            'thumbnail_url': v['thumbnail_url'],
+            'title':         v['title'],
+            'date':          dt.strftime('%d/%m/%Y'),
+            'year':          dt.strftime('%Y'),
+            'lang':          '',
+        })
+    return result
+
+
+def generate_videos():
+    """Genera videos.html combinant YouTube i Facebook."""
+    # Carrega vídeos de YouTube
+    yt_videos = []
+    if os.path.exists('data/videos_youtube.json'):
+        yt_videos = load_json('data/videos_youtube.json')
+        for v in yt_videos:
+            v.setdefault('source', 'youtube')
+
+    # Carrega vídeos de Facebook
+    fb_videos = load_facebook_videos()
+
+    all_videos = yt_videos + fb_videos
+
+    # Ordena per data descendent (YYYY-MM-DD key)
+    def sort_key(v):
+        d = v['date']  # DD/MM/YYYY
+        try:
+            return d[6:10] + d[3:5] + d[0:2]
+        except Exception:
+            return '00000000'
+
+    all_videos.sort(key=sort_key, reverse=True)
+
+    years = sorted(set(v['year'] for v in all_videos), reverse=True)
+    langs = sorted(set(v['lang'] for v in all_videos if v['lang']))
+
+    videos_json = json.dumps(all_videos, ensure_ascii=False, separators=(',', ':'))
+
+    # Filtres d'any
+    year_filters_html = ''
+    for y in years:
+        year_filters_html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="{y}"> {y}</label>\n'
+
+    # Filtres d'idioma
+    lang_labels = {
+        'ES': 'ES 🇪🇸', 'EN': 'EN 🇬🇧', 'DE': 'DE 🇩🇪',
+        'FR': 'FR 🇫🇷', 'CA': 'CAT', 'CAT': 'CAT',
+    }
+    lang_filters_html = ''
+    for lang in langs:
+        label = lang_labels.get(lang, lang)
+        lang_filters_html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="{esc(lang)}"> {label}</label>\n'
+
+    html = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validated ID — Vídeos</title>
+<style>
+{COMMON_CSS}
+
+  .grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }}
+
+  .card {{
+    background: #1e2a4a; border: 1px solid #2a3a5a;
+    border-radius: 8px; overflow: hidden;
+    transition: transform 0.15s, border-color 0.15s;
+    cursor: pointer;
+  }}
+  .card:hover {{ transform: translateY(-2px); border-color: #00BF71; }}
+
+  .video-wrap {{
+    position: relative; width: 100%; padding-bottom: 56.25%;
+    background: #0d1229; overflow: hidden;
+  }}
+  .video-wrap img {{
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: opacity 0.3s;
+  }}
+  .video-wrap img.loading {{ opacity: 0; }}
+  .card:hover .video-wrap img {{ opacity: 0.75; }}
+
+  .play-btn {{
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(0,191,113,0.85);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }}
+  .play-btn::after {{
+    content: '';
+    border-style: solid;
+    border-width: 10px 0 10px 18px;
+    border-color: transparent transparent transparent #0d1229;
+    margin-left: 3px;
+  }}
+
+  .card-body {{ padding: 0.75rem; }}
+  .badges {{ display: flex; gap: 0.35rem; margin-bottom: 0.4rem; flex-wrap: wrap; }}
+
+  .badge-source-yt {{ background: #ff0000; color: #fff; }}
+  .badge-source-fb {{ background: #1877f2; color: #fff; }}
+  .badge-lang {{ background: #2a3a5a; color: #ccd6f6; border: 1px solid #3a4a6a; }}
+
+  .card-title {{
+    font-size: 0.88rem; color: #e6f0ff;
+    line-height: 1.4; margin-bottom: 0.3rem;
+    display: -webkit-box; -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }}
+  .card-date {{ font-size: 0.75rem; color: #8892b0; }}
+
+  /* LIGHTBOX */
+  .lightbox {{
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92); z-index: 1000;
+    align-items: center; justify-content: center;
+    flex-direction: column; padding: 2rem;
+  }}
+  .lightbox.open {{ display: flex; }}
+  .lb-video-wrap {{
+    width: min(860px, 90vw);
+    aspect-ratio: 16/9;
+  }}
+  .lb-video-wrap iframe {{
+    width: 100%; height: 100%; border: none; border-radius: 4px;
+  }}
+  .lightbox-meta {{ margin-top: 1rem; text-align: center; max-width: 700px; }}
+  .lightbox-title {{ font-size: 1rem; color: #e6f0ff; font-weight: 600; margin-bottom: 0.3rem; }}
+  .lightbox-date {{ font-size: 0.8rem; color: #00BF71; }}
+  .lightbox-close {{
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: transparent; border: none; color: #ccd6f6;
+    font-size: 2rem; cursor: pointer; line-height: 1;
+  }}
+  .lightbox-close:hover {{ color: #00BF71; }}
+
+  @media (max-width: 700px) {{
+    .sidebar {{ display: none; }}
+    .grid {{ grid-template-columns: repeat(2, 1fr); }}
+  }}
+  @media (max-width: 400px) {{
+    .grid {{ grid-template-columns: 1fr; }}
+  }}
+</style>
+</head>
+<body>
+
+{html_header('Vídeos', 'Vídeos')}
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="filter-section">
+      <div class="filter-title">Año</div>
+      {year_filters_html}
+    </div>
+    <div class="filter-section">
+      <div class="filter-title">Fuente</div>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="youtube"> ▶ YouTube</label>
+      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="facebook"> 📘 Facebook</label>
+    </div>
+    <div class="filter-section">
+      <div class="filter-title">Idioma</div>
+      {lang_filters_html}
+    </div>
+    <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
+  </aside>
+
+  <main>
+    <div class="results-bar"><span id="count">0</span> vídeos</div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+{html_footer()}
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <div id="lb-content"></div>
+  <div class="lightbox-meta">
+    <div class="lightbox-title" id="lb-title"></div>
+    <div class="lightbox-date"  id="lb-date"></div>
+  </div>
+</div>
+
+<script>
+const VIDEOS = {videos_json};
+
+let filtered = [...VIDEOS];
+
+function applyFilters() {{
+  const years   = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
+  const sources = new Set([...document.querySelectorAll('.filter-cb[data-type=source]:checked')].map(c => c.value));
+  const langs   = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
+  filtered = VIDEOS.filter(v => {{
+    if (years.size   > 0 && !years.has(v.year))     return false;
+    if (sources.size > 0 && !sources.has(v.source)) return false;
+    if (langs.size   > 0 && !langs.has(v.lang))     return false;
+    return true;
+  }});
+  renderGrid();
+}}
+
+function clearFilters() {{
+  document.querySelectorAll('.filter-cb').forEach(c => c.checked = false);
+  applyFilters();
+}}
+
+document.querySelectorAll('.filter-cb').forEach(cb => cb.addEventListener('change', applyFilters));
+
+function escHTML(s) {{
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}}
+function escAttr(s) {{
+  return String(s).replace(/"/g,'&quot;');
+}}
+
+function cardHTML(v, i) {{
+  const srcBadge = v.source === 'youtube'
+    ? '<span class="badge badge-year badge-source-yt">YouTube</span>'
+    : '<span class="badge badge-year badge-source-fb">Facebook</span>';
+  const langBadge = v.lang
+    ? `<span class="badge badge-lang">${{escHTML(v.lang)}}</span>`
+    : '';
+  return `<div class="card" onclick="openVideo(${{i}})">
+    <div class="video-wrap">
+      <img data-src="${{escAttr(v.thumbnail_url)}}" src="" alt="${{escAttr(v.title)}}" class="loading">
+      <div class="play-btn"></div>
+    </div>
+    <div class="card-body">
+      <div class="badges">
+        <span class="badge badge-year">${{escHTML(v.year)}}</span>
+        ${{srcBadge}}
+        ${{langBadge}}
+      </div>
+      <div class="card-title">${{escHTML(v.title)}}</div>
+      <div class="card-date">${{escHTML(v.date)}}</div>
+    </div>
+  </div>`;
+}}
+
+function renderGrid() {{
+  const grid = document.getElementById('grid');
+  grid.innerHTML = filtered.map((v, i) => cardHTML(v, i)).join('');
+
+  // Lazy load
+  grid.querySelectorAll('img[data-src]').forEach(img => {{
+    const obs = new IntersectionObserver(entries => {{
+      entries.forEach(e => {{
+        if (e.isIntersecting) {{
+          img.src = img.dataset.src;
+          img.onload = () => img.classList.remove('loading');
+          obs.disconnect();
+        }}
+      }});
+    }}, {{ rootMargin: '200px' }});
+    obs.observe(img);
+  }});
+
+  document.getElementById('count').textContent = filtered.length;
+}}
+
+function openVideo(filteredIdx) {{
+  const v = filtered[filteredIdx];
+  document.getElementById('lb-content').innerHTML =
+    `<div class="lb-video-wrap"><iframe src="${{escAttr(v.embed_url)}}" allowfullscreen></iframe></div>`;
+  document.getElementById('lb-title').textContent = v.title;
+  document.getElementById('lb-date').textContent  = v.date;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}}
+
+function closeLightbox() {{
+  const wrap = document.querySelector('.lb-video-wrap');
+  if (wrap) wrap.innerHTML = '';
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}}
+
+document.getElementById('lightbox').addEventListener('click', e => {{
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}});
+
+document.addEventListener('keydown', e => {{
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+}});
+
+renderGrid();
+</script>
+</body>
+</html>"""
+
+    return html
+
+
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     import sys
@@ -1064,5 +1384,11 @@ if __name__ == '__main__':
     posts_with_images = len([p for p in all_posts if p['images']])
     size = os.path.getsize('imatges.html') / 1024
     print(f'✓ imatges.html ({size:.0f} KB, {posts_with_images} posts amb imatge)')
+
+    print('\nGenerant videos.html...')
+    with open('videos.html', 'w', encoding='utf-8') as f:
+        f.write(generate_videos())
+    size = os.path.getsize('videos.html') / 1024
+    print(f'✓ videos.html ({size:.0f} KB)')
 
     print('\nFet.')
