@@ -197,11 +197,11 @@ COMMON_CSS = """
 
 def html_header(subtitle, active_page):
     nav_pages = [
+        ('imatges.html',   'Imágenes'),
         ('videos.html',    'Vídeos'),
         ('linkedin.html',  'LinkedIn'),
-        ('instagram.html', 'Instagram'),
         ('facebook.html',  'Facebook'),
-        ('imatges.html',   'Imágenes'),
+        ('instagram.html', 'Instagram'),
     ]
     buttons = ''
     for href, label in nav_pages:
