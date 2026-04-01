@@ -795,11 +795,15 @@ def generate_imatges(all_posts):
   }}
 
   .card-body {{ padding: 0.65rem 0.75rem; }}
-  .badges {{ display: flex; gap: 0.35rem; margin-bottom: 0.4rem; flex-wrap: wrap; }}
+  .badges {{ display: flex; gap: 0.35rem; margin-bottom: 0.3rem; flex-wrap: wrap; }}
 
   .badge-network {{
     font-size: 0.68rem; font-weight: 600;
     padding: 0.12rem 0.45rem; border-radius: 3px; color: #fff;
+  }}
+
+  .card-date {{
+    font-size: 0.72rem; color: #8892b0; margin-bottom: 0.3rem;
   }}
 
   .card-caption {{
@@ -962,6 +966,7 @@ function cardHTML(p, i) {{
         <span class="badge badge-year">${{p.year}}</span>
         <span class="badge badge-network" style="background:${{netColor}}">${{netLabel}}</span>
       </div>
+      <div class="card-date">${{p.date}}</div>
       <div class="${{captionClass}}">${{escHTML(captionText)}}</div>
       <a class="post-link" href="${{p.pageRef}}">&#8594; Ver publicación</a>
     </div>
