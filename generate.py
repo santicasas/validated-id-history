@@ -577,7 +577,6 @@ function postHTML(p) {{
       <div class="post-video-wrap" onclick="openVideoLightbox('${{escAttr(p.anchor)}}')" title="Reproducir vídeo">
         <img data-src="${{p.video.thumbnail_url}}" src="" alt="${{escAttr(p.video.title)}}" class="loading">
         <div class="video-play-btn"></div>
-        <div class="video-title">▶ ${{escHTML(p.video.title)}}</div>
       </div>`;
   }}
 
