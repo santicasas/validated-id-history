@@ -75,18 +75,22 @@ def parse_posts():
                 stats['no_date'] += 1
                 date_str = f'{year_label}-01-01'  # fallback a l'any del fitxer
 
-            # ── IMATGES ───────────────────────────────────────────────────────
+            # ── IMATGES I VÍDEOS NATIUS ───────────────────────────────────────
             local_media = post.get('localMedia', [])
             images = []
+            native_video_filename = None
             for m in local_media:
                 filename = m.replace('\\', '/').split('/')[-1]
-                images.append(f'{ARCHIVE_BASE}/{filename}')
+                if filename.endswith('_video.mp4'):
+                    native_video_filename = filename
+                else:
+                    images.append(f'{ARCHIVE_BASE}/{filename}')
 
-            if len(images) == 0:
+            if len(images) == 0 and not native_video_filename:
                 stats['no_image'] += 1
             elif len(images) == 1:
                 stats['with_images'] += 1
-            else:
+            elif len(images) > 1:
                 stats['multi_image'] += 1
 
             # ── TIPUS DE CONTINGUT ────────────────────────────────────────────
@@ -98,16 +102,28 @@ def parse_posts():
             post_id = post.get('id', key)
             anchor_id = post_id.replace(':', '-').replace('urn-li-share-', '')
 
-            # ── VÍDEO DE YOUTUBE → ARCHIVE.ORG ────────────────────────────────
+            # ── VÍDEO NATIU DE LINKEDIN → ARCHIVE.ORG ─────────────────────────
             video = None
-            content = post.get('content', {})
-            article = content.get('article', {})
-            article_source = article.get('source', '') or ''
-            yt_match = re.search(r'(?:v=|youtu\.be/)([A-Za-z0-9_-]{11})', article_source)
-            if yt_match:
-                yt_id = yt_match.group(1)
-                if yt_id in yt_map:
-                    video = yt_map[yt_id]
+            if native_video_filename:
+                fn = native_video_filename
+                fn_no_ext = fn.replace('.mp4', '')
+                video = {
+                    'embed_url':     f'{ARCHIVE_BASE}/{fn}?ui-theme=dark'.replace('/download/', '/embed/'),
+                    'thumbnail_url': f'{ARCHIVE_BASE}/validatedid-linkedin-media.thumbs/{fn_no_ext}_000001.jpg',
+                    'title':         clean_text(post.get('commentary', ''))[:120],
+                }
+                stats['content_types']['native_video'] = stats['content_types'].get('native_video', 0) + 1
+
+            # ── VÍDEO DE YOUTUBE → ARCHIVE.ORG ────────────────────────────────
+            if not video:
+                content = post.get('content', {})
+                article = content.get('article', {})
+                article_source = article.get('source', '') or ''
+                yt_match = re.search(r'(?:v=|youtu\.be/)([A-Za-z0-9_-]{11})', article_source)
+                if yt_match:
+                    yt_id = yt_match.group(1)
+                    if yt_id in yt_map:
+                        video = yt_map[yt_id]
 
             # ── POST FINAL ────────────────────────────────────────────────────
             posts.append({
@@ -145,9 +161,11 @@ if __name__ == '__main__':
 
     print(f'\n✓ Generat: {OUTPUT_FILE}')
     print(f'\n── Estadístiques ──────────────────────────────')
+    native_vids = len([p for p in posts if p.get('video') and 'embed/validatedid-linkedin-media' in (p['video'].get('embed_url') or '')])
     print(f'  Total posts:           {stats["total"]}')
     print(f'  Amb 1 imatge:          {stats["with_images"]}')
     print(f'  Amb múltiples imatges: {stats["multi_image"]}')
+    print(f'  Vídeos natius:         {native_vids}')
     print(f'  Sense imatge:          {stats["no_image"]}')
     print(f'  Sense data:            {stats["no_date"]}')
     print(f'\n── Tipus de contingut ─────────────────────────')
