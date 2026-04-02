@@ -121,12 +121,6 @@ Les imatges als JSONs tenen formats diferents segons la xarxa:
 - Threshold: `with_minimum_relative_distance(0.35)`
 - Pre-processa: elimina URLs, hashtags, mencions, chars Unicode de control, cadenes de noms propis
 
-## Notificacions Telegram
-
-`tg_notify.py` — bot `SantiAssistantBot`:
-- Token: `8753837839:AAEh0Rjkzih7njLoRF406LhqWb4-VOwFe0s`
-- Chat ID: `4334408`
-
 ## Estat actual (abril 2026)
 
 - Totes les pàgines generades i funcionals
