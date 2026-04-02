@@ -18,19 +18,21 @@ validated-id-history/
 ├── assets/                    # Logos, imatges estàtiques
 ├── generate.py                # Generador principal de tot l'HTML
 ├── lang_detect.py             # Detecció d'idioma (lingua library)
+├── parse_linkedin.py          # Parseja backup LinkedIn → data/linkedin.json
+├── parse_facebook.py          # Parseja backup Facebook → data/facebook.json
+├── parse_instagram.py         # Parseja backup Instagram → data/instagram.json
 ├── parse_twitter.py           # Parseja backup Twitter → data/twitter.json
 ├── archive_twitter_youtube.py # Arxiva vídeos YouTube de Twitter a Archive.org
 ├── upload_twitter_media.py    # Puja fotos/vídeos Twitter a Archive.org
 ├── tg_notify.py               # Notificacions Telegram (bot SantiAssistantBot)
 ├── wait_and_run.py            # Supervisor seqüencial amb notificacions
-├── index.html                 # Pàgina principal (generada manualment)
+├── index.html                 # Pàgina principal (editada manualment)
 ├── linkedin.html              # Generat per generate.py
-├── instagram.html             # Generat per generate.py
+├── instagram.html             # Generat per generate.py (grid de targetes)
 ├── facebook.html              # Generat per generate.py
-├── twitter.html               # Generat per generate.py
+├── twitter.html               # Generat per generate.py (grid de targetes)
 ├── imatges.html               # Galeria unificada (generat per generate.py)
-├── videos.html                # Vídeos unificats (generat per generate.py)
-└── historia.html              # Cronologia (pendent de revisió)
+└── videos.html                # Vídeos unificats (generat per generate.py)
 ```
 
 ## Xarxes socials incloses
@@ -64,13 +66,26 @@ TWITTER_ACCOUNT_COLORS = {
 **filterKey** per imatges/vídeos: `x:ValidatedID`, `x:VIDsigner`, `x:VIDidentity`
 **Etiquetes UI:** `x:@ValidatedID`, `x:@VIDsigner`, `x:@VIDidentity`
 
+## LinkedIn — detalls tècnics
+
+**Backup local:** `C:\Users\santi\Dropbox\Social VID\Linkedin\backup\`
+- Fitxers: `02_posts_YYYY.json` (un per any), `media/` amb imatges i vídeos
+- Vídeos natius: fitxers `urn_li_ugcPost_XXXX_video.mp4` a `media/`
+- `parse_linkedin.py` detecta automàticament els vídeos natius i els separa de les imatges
+
 ## Archive.org
 
 **Items creats:**
 - `validatedid-twitter-media` — 1.613 fitxers (fotos + vídeos MP4 Twitter)
+- `validatedid-linkedin-media` — imatges + 26 vídeos natius MP4 LinkedIn
 - `validatedid-youtube-channel` — vídeos propis de YouTube
 - `externs-youtube-channel` — vídeos externs de YouTube
-- `validatedid-facebook-media` — vídeos i thumbnails Facebook
+- `validatedid-facebook-media` — imatges + vídeos MP4 Facebook
+- `validatedid-instagram-media` — imatges Instagram
+
+**Format de thumbnails per vídeos:**
+- Twitter/Facebook: `{ARCHIVE_BASE}/{filename}.mp4.jpg` (pujat manualment)
+- LinkedIn: `{ARCHIVE_BASE}/validatedid-linkedin-media.thumbs/{filename_sense_ext}_000001.jpg` (generat automàticament per Archive.org)
 
 **Eina d'upload:** `ia.exe` (path complet necessari):
 ```
@@ -86,9 +101,18 @@ python generate.py
 ```
 
 Genera tots els fitxers HTML. Llegeix els JSONs de `data/` i produeix:
-- `linkedin.html`, `instagram.html`, `facebook.html`, `twitter.html`
-- `imatges.html` (galeria unificada de totes les xarxes)
-- `videos.html` (vídeos de YouTube + Facebook + Twitter)
+- `linkedin.html`, `facebook.html` — format llista (text + media lateral)
+- `instagram.html`, `twitter.html` — format grid de targetes
+- `imatges.html` — galeria unificada de totes les xarxes
+- `videos.html` — vídeos de YouTube + Facebook + Twitter + LinkedIn natius
+
+**`index.html` s'edita manualment** — no es regenera amb `generate.py`.
+
+## Format de dades
+
+Les imatges als JSONs tenen formats diferents segons la xarxa:
+- LinkedIn, Instagram, Facebook: llista de strings (URLs)
+- Twitter: llista d'objectes `{url: '...', alt: '...'}` → `generate.py` normalitza a strings
 
 ## Detecció d'idioma
 
@@ -105,11 +129,12 @@ Genera tots els fitxers HTML. Llegeix els JSONs de `data/` i produeix:
 
 ## Estat actual (abril 2026)
 
-- Tot generat i funcional: `twitter.html`, `imatges.html`, `videos.html`
+- Totes les pàgines generades i funcionals
 - 2.015 tweets parsejats, 1.613 fitxers media a Archive.org
+- 26 vídeos natius LinkedIn pujats a Archive.org i integrats a `videos.html`
 - 30 vídeos YouTube arxivats (1 falla: `#DayoneWebinar zbD3e6nxw-s` — eliminat de YT)
+- Disseny responsive per a mòbils a totes les pàgines
 
 ## Pendent
 
 - **`historia.html`** — revisió i actualització del contingut
-- Verificar que `twitter.html` es veu bé al navegador
