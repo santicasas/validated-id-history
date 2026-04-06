@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Validated ID — Historia</title>
 <style>
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
 
@@ -29,30 +30,11 @@
     z-index: 100;
   }
 
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+  .logo-area { display: flex; align-items: center; gap: 0.5rem; }
+  .logo-image { height: 30px; width: auto; display: block; }
+  .header-subtitle { font-size: 0.85rem; color: #8892b0; margin-left: 0.5rem; }
 
-  .logo-image {
-    height: 30px;
-    width: auto;
-    display: block;
-  }
-
-  .header-subtitle {
-    font-size: 0.85rem;
-    color: #8892b0;
-    margin-left: 0.5rem;
-  }
-
-  .header-network-nav {
-    margin-left: auto;
-    display: flex;
-    gap: 0.5rem;
-  }
-
+  .header-network-nav { margin-left: auto; display: flex; gap: 0.5rem; }
   .header-network-btn {
     background: transparent;
     border: 1px solid #2a3a5a;
@@ -64,323 +46,460 @@
     cursor: pointer;
     text-decoration: none;
   }
-
-  .header-network-btn:hover {
-    border-color: #00BF71;
-    color: #00BF71;
-  }
-
+  .header-network-btn:hover { border-color: #00BF71; color: #00BF71; }
   .header-network-btn.active {
-    background: #00BF71;
-    border-color: #00BF71;
-    color: #0d1229;
-    cursor: default;
+    background: #00BF71; border-color: #00BF71; color: #0d1229; cursor: default;
   }
 
-  main {
-    flex: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    width: 100%;
+  .layout { display: flex; flex: 1; min-height: 0; }
+
+  .sidebar {
+    width: 220px; min-width: 220px;
+    background: #0d1229;
+    padding: 1.5rem 1rem;
+    position: sticky;
+    top: 67px;
+    height: calc(100vh - 67px);
+    overflow-y: auto;
+    border-right: 1px solid #2a3a5a;
   }
 
-  .intro-section {
-    background: #1e2a4a;
-    border: 1px solid #2a3a5a;
-    border-radius: 8px;
-    padding: 2rem;
-    margin-bottom: 3rem;
-    text-align: center;
+  .filter-section { border-bottom: 1px solid #1e2a4a; }
+  .filter-section-header {
+    display: flex; align-items: center;
+    padding: 0.5rem 0; cursor: pointer; user-select: none;
   }
-
-  .intro-section h1 {
-    font-size: 2rem;
-    color: #e6f0ff;
-    margin-bottom: 1rem;
+  .filter-section-title {
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: #00BF71; flex: 1;
   }
-
-  .intro-section p {
-    font-size: 1rem;
-    color: #8892b0;
-    line-height: 1.7;
-    max-width: 700px;
-    margin: 0 auto;
+  .filter-section-badge {
+    font-size: 0.65rem; background: #00BF71; color: #0d1229;
+    border-radius: 10px; padding: 0 6px; font-weight: 700;
+    margin-right: 0.3rem; min-width: 18px; text-align: center;
   }
-
-  .timeline {
-    position: relative;
-    padding: 2rem 0;
+  .filter-section-arrow {
+    font-size: 0.55rem; color: #8892b0;
+    transition: transform 0.2s; display: inline-block;
   }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    height: 100%;
-    background: linear-gradient(to bottom, #00BF71, #2a3a5a);
+  .filter-section-arrow.open { transform: rotate(90deg); }
+  .filter-section-body { display: none; padding-bottom: 0.5rem; }
+  .filter-section-body.open { display: block; }
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
+  .filter-chip {
+    background: #1a2a4a; color: #8892b0;
+    border: 1px solid #2a3a5a; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 0.2rem 0.45rem; cursor: pointer;
+    user-select: none; transition: all 0.15s; line-height: 1.4;
   }
-
-  .timeline-item {
-    margin-bottom: 3rem;
-    position: relative;
+  .filter-chip:hover { border-color: #00BF71; color: #ccd6f6; }
+  .filter-chip.active { background: #00BF71; color: #0d1229; border-color: #00BF71; }
+  .clear-btn {
+    width: 100%; background: transparent;
+    border: 1px solid #2a3a5a; color: #8892b0;
+    padding: 0.4rem 0.8rem; border-radius: 4px;
+    cursor: pointer; font-size: 0.82rem; margin-top: 0.8rem; transition: all 0.2s;
   }
+  .clear-btn:hover { border-color: #00BF71; color: #00BF71; }
 
-  .timeline-item:nth-child(odd) .timeline-content {
-    margin-left: 0;
-    margin-right: auto;
-    width: calc(50% - 2rem);
-    text-align: right;
+  main { flex: 1; padding: 1.5rem; overflow-y: auto; min-width: 0; }
+
+  .results-bar { font-size: 0.85rem; color: #8892b0; margin-bottom: 1rem; }
+  .results-bar span { color: #00BF71; font-weight: 700; }
+
+  .badge {
+    font-size: 0.68rem; font-weight: 600;
+    padding: 0.12rem 0.45rem; border-radius: 3px; white-space: nowrap;
   }
-
-  .timeline-item:nth-child(even) .timeline-content {
-    margin-left: auto;
-    margin-right: 0;
-    width: calc(50% - 2rem);
-  }
-
-  .timeline-dot {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    background: #00BF71;
-    border: 3px solid #151A35;
-    border-radius: 50%;
-    z-index: 2;
-  }
-
-  .timeline-content {
-    background: #1e2a4a;
-    border: 1px solid #2a3a5a;
-    border-radius: 8px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  .timeline-content:hover {
-    border-color: #00BF71;
-    box-shadow: 0 4px 16px rgba(0, 191, 113, 0.1);
-  }
-
-  .timeline-year {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #00BF71;
-    margin-bottom: 0.5rem;
-  }
-
-  .timeline-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #e6f0ff;
-    margin-bottom: 0.75rem;
-  }
-
-  .timeline-description {
-    font-size: 0.95rem;
-    color: #8892b0;
-    line-height: 1.6;
-    margin-bottom: 0.75rem;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-
-  .timeline-content.expanded .timeline-description {
-    max-height: 500px;
-  }
-
-  .timeline-toggle {
-    font-size: 0.85rem;
-    color: #00BF71;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .timeline-toggle::after {
-    content: ' ▼';
-    display: inline-block;
-    margin-left: 0.5rem;
-    transition: transform 0.3s ease;
-  }
-
-  .timeline-content.expanded .timeline-toggle::after {
-    transform: rotate(180deg);
+  .badge-year { background: #00BF71; color: #0d1229; }
+  .badge-cat {
+    background: #1a2a4a; color: #7dd3fc;
+    border: 1px solid #2563eb; border-radius: 3px;
+    font-size: 0.62rem; font-weight: 600;
+    padding: 0.1rem 0.4rem; white-space: nowrap;
   }
 
   footer {
-    background: #0d1229;
-    border-top: 1px solid #2a3a5a;
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.8rem;
-    color: #8892b0;
-    margin-top: auto;
+    background: #0d1229; border-top: 1px solid #2a3a5a;
+    text-align: center; padding: 1rem; font-size: 0.8rem; color: #8892b0;
   }
   footer a { color: #00BF71; text-decoration: none; }
 
-  @media (max-width: 800px) {
-    .timeline::before {
-      left: 20px;
-    }
-
-    .timeline-item:nth-child(odd) .timeline-content,
-    .timeline-item:nth-child(even) .timeline-content {
-      margin-left: 60px;
-      margin-right: auto;
-      width: calc(100% - 80px);
-      text-align: left;
-    }
-
-    .timeline-dot {
-      left: 20px;
-    }
+  @media (max-width: 768px) {
+    header { padding: 0.6rem 1rem; flex-wrap: wrap; gap: 0.4rem; }
+    .header-subtitle { display: none; }
+    .header-network-nav { margin-left: 0; width: 100%; gap: 0.3rem; flex-wrap: wrap; }
+    .header-network-btn { padding: 0.25rem 0.5rem; font-size: 0.72rem; }
+    .sidebar { display: none; }
+    main { padding: 1rem 0.75rem; }
   }
+  @media (max-width: 480px) {
+    .header-network-btn { padding: 0.2rem 0.4rem; font-size: 0.68rem; }
+  }
+
+
+  /* ── Historia layout ── */
+  .historia-wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+  }
+  .historia-title {
+    font-size: 2rem; font-weight: 700; color: #e6f0ff;
+    margin-bottom: 0.4rem;
+  }
+  .historia-subtitle {
+    font-size: 1rem; font-weight: 600; color: #00BF71;
+    margin-bottom: 0.8rem; letter-spacing: 0.3px;
+  }
+  .historia-intro {
+    font-size: 0.95rem; color: #8892b0; line-height: 1.65;
+    max-width: 680px; margin-bottom: 2.5rem;
+  }
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 2.5rem; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 5px; top: 6px; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #00BF71 0%, #1e2a4a 100%);
+  }
+
+  .year-section { position: relative; padding: 0 0 2.5rem 1.5rem; }
+  .year-section::before {
+    content: '';
+    position: absolute; left: -10px; top: 6px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #00BF71; border: 3px solid #151A35;
+    box-shadow: 0 0 0 2px #00BF71;
+    z-index: 1;
+  }
+
+  .year-marker {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+  .year-dot { display: none; }
+  .year-num {
+    font-size: 1.4rem; font-weight: 700; color: #00BF71; line-height: 1;
+  }
+  .milestone-tag {
+    display: inline-block;
+    background: #00BF71; color: #0d1229;
+    font-size: 0.6rem; font-weight: 700;
+    padding: 0.15rem 0.6rem; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    margin-bottom: 0.5rem;
+  }
+  .year-narrative {
+    font-size: 0.9rem; color: #ccd6f6; line-height: 1.7;
+    margin-bottom: 0.9rem; max-width: 700px;
+  }
+  .year-narrative strong { color: #e6f0ff; }
+
+  /* ── Post cards ── */
+  .pc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .pc {
+    background: #1e2a4a; border: 1px solid #2a3a5a;
+    border-radius: 8px; overflow: hidden;
+    text-decoration: none; display: flex; flex-direction: column;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .pc:hover { border-color: #00BF71; transform: translateY(-2px); }
+  .pc-img {
+    width: 100%; aspect-ratio: 16/9;
+    object-fit: cover; display: block;
+  }
+  .pc-no-img {
+    width: 100%; aspect-ratio: 16/9;
+    background: #0d1229;
+  }
+  .pc-body {
+    padding: 0.55rem 0.7rem;
+    display: flex; flex-direction: column; gap: 0.3rem; flex: 1;
+  }
+  .pc-net {
+    font-size: 0.6rem; font-weight: 700;
+    padding: 0.1rem 0.4rem; border-radius: 3px; color: #fff;
+    display: inline-block;
+  }
+  .pc-text {
+    font-size: 0.75rem; color: #8892b0; line-height: 1.45; flex: 1;
+  }
+  .pc-date { font-size: 0.63rem; color: #4a5a7a; }
+
+  /* ── Year nav ── */
+  .year-nav {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin-bottom: 2.2rem; list-style: none; padding: 0;
+  }
+  .year-nav a {
+    background: #1a2a4a; color: #8892b0;
+    border: 1px solid #2a3a5a; border-radius: 4px;
+    font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.55rem;
+    text-decoration: none; transition: all 0.15s;
+  }
+  .year-nav a:hover { background: #00BF71; color: #0d1229; border-color: #00BF71; }
+
+  /* ── Epilogue ── */
+  .epilogue {
+    margin-top: 3rem; padding: 1.5rem 1.75rem;
+    background: #1a2a4a; border: 1px solid #2a3a5a; border-radius: 10px;
+    max-width: 700px;
+  }
+  .epilogue-title {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: #00BF71; margin-bottom: 1.1rem;
+  }
+  .epilogue-stats {
+    display: flex; flex-wrap: wrap; gap: 1.5rem;
+  }
+  .stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+  .stat-num {
+    font-size: 2rem; font-weight: 700; color: #e6f0ff; line-height: 1;
+  }
+  .stat-label { font-size: 0.75rem; color: #8892b0; margin-top: 0.2rem; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .timeline { padding-left: 1.5rem; }
+    .year-section { padding-left: 1rem; }
+    .historia-title { font-size: 1.5rem; }
+    .pc-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 360px) {
+    .pc-grid { grid-template-columns: 1fr; }
+  }
+
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo-area">
-    <a href="index.html" title="Volver a inicio">
+    <a href="index.html" title="Volver al inicio">
       <img class="logo-image" src="assets/validated-id-logo-white-text-alt.webp" alt="Validated ID">
     </a>
-    <span class="header-subtitle">Historia</span>
+    <span class="header-subtitle">Historia de Validated ID</span>
   </div>
-  <div class="header-network-nav">
-    <a href="videos.html" class="header-network-btn">Vídeos</a>
-    <a href="imatges.html" class="header-network-btn">Imágenes</a>
-    <a href="videos.html" class="header-network-btn">Vídeos</a>
-    <a href="linkedin.html" class="header-network-btn">LinkedIn</a>
-    <a href="facebook.html" class="header-network-btn">Facebook</a>
-    <a href="instagram.html" class="header-network-btn">Instagram</a>
-  </div>
+  <div class="header-network-nav"><button class="header-network-btn active">Historia</button><a href="imatges.html" class="header-network-btn">Imágenes</a><a href="videos.html" class="header-network-btn">Vídeos</a><a href="linkedin.html" class="header-network-btn">LinkedIn</a><a href="twitter.html" class="header-network-btn">Twitter</a><a href="facebook.html" class="header-network-btn">Facebook</a><a href="instagram.html" class="header-network-btn">Instagram</a></div>
 </header>
 
-<main>
-  <section class="intro-section">
-    <h1>Historia de Validated ID</h1>
-    <p>De la innovación en la firma digital a la identidad digital del futuro. Décadas de evolución, partnerships estratégicos y transformación digital.</p>
-  </section>
+<div class="historia-wrap">
+  <h1 class="historia-title">Historia de Validated ID</h1>
+  <p class="historia-subtitle">Un caso de éxito</p>
+  <p class="historia-intro">
+    Una startup de firma electrónica nacida en Barcelona en 2012 que, en poco más de una década,
+    pasó de sus primeros clientes en el sector salud a convertirse en referente europeo en
+    identidad digital, participar en los proyectos de la Comisión Europea que definieron el
+    estándar EUDIW, y sumar más de 5.000 clientes en más de 40 países. Una historia de tecnología,
+    convicción y un equipazo que solo podía terminar integrándose en el líder de los servicios
+    de confianza europeo.
+  </p>
 
-  <section class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2016</div>
-        <div class="timeline-title">Los comienzos: firmacontudnie.es</div>
-        <div class="timeline-description">
-          Validated ID inicia su viaje en la firma digital electrónica. El primer proyecto documentado en nuestro archivo: firmacontudnie.es, una solución innovadora para la firma digital en España.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+  <nav class="year-nav" aria-label="Saltar a año">
+    <a href="#y2012">2012</a><a href="#y2013">2013</a><a href="#y2014">2014</a><a href="#y2015">2015</a><a href="#y2016">2016</a><a href="#y2017">2017</a><a href="#y2018">2018</a><a href="#y2019">2019</a><a href="#y2020">2020</a><a href="#y2021">2021</a><a href="#y2022">2022</a><a href="#y2023">2023</a><a href="#y2024">2024</a><a href="#y2025">2025</a>
+  </nav>
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2017</div>
-        <div class="timeline-title">VIDsigner y DocuSign Integration</div>
-        <div class="timeline-description">
-          Se presenta VIDsigner como solución para administración sin papeles. Validated ID comienza alianzas estratégicas, incluyendo la integración con DocuSign, consolidando su posición en el mercado europeo.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+  <div class="timeline">
+    
+<div class="year-section" id="y2012">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2012</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">Fundación</div>
+    <p class="year-narrative">En febrero, Santi Casas, Iván Basart y Fernando Pino fundan Validated ID, con experiencia previa en certificación digital y firma electrónica. A finales de año se incorpora Jaume Fuentes, con amplio historial en ventas en el sector TIC. Modelo bootstrap: los primeros ingresos vienen de proyectos como expertos. Se hereda <strong>pimefactura</strong>, operada conjuntamente con PIMEC. Primeros despliegues de <strong>VIDsigner</strong> en el sector salud — el Institut Lleida d'Oftalmologia es el primer cliente, con cobertura en TV3.</p>
+    <div class="pc-grid"><a class="pc" href="twitter.html#272988868024889344"><img class="pc-img" src="https://archive.org/download/validatedid-twitter-media/272988868024889344-A8nZ7dqCcAAO7oU.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#1da1f2">Twitter/X</span></div><div class="pc-text">SAP and @ViDSigner together ...</div><div class="pc-date">26/11/2012</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2013">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2013</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">VIDsigner gana tracción real: integración con SAP via NewLog/Seidor, firma digital en el Ajuntament de Barcelona y Terrassa. El <strong>consentimiento informado digital</strong> emerge como caso de uso principal en sanidad. Presencia en TicSalut, ACES y el ecosistema de salud catalán.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#1390362059"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_1390362059_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Presentando ViDSigner en Euskadi.
+http://sntc.eu/g6</div><div class="pc-date">05/03/2013</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2014">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2014</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">Primera aparición en el <strong>Mobile World Congress</strong>. La compañía <strong>triplica su volumen de negocio</strong>. Nuevos clientes en sanidad pública y privada, y primeras implantaciones en administración local. El Consell de la UE aprueba el reglamento eIDAS — Validated ID lo sigue de cerca desde el principio.</p>
+    <div class="pc-grid"><a class="pc" href="twitter.html#439051393933266944"><img class="pc-img" src="https://archive.org/download/validatedid-twitter-media/439051393933266944-BhfS6p6IMAAOIQ_.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#1da1f2">Twitter/X</span></div><div class="pc-text">goodbye #mwc14... See u next year!</div><div class="pc-date">27/02/2014</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2015">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2015</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">Foco en salud: hospitales, clínicas, campañas "clínica sin papeles". Santi Casas entrevistado en Expansión sobre biometría y firma electrónica. Seleccionados en la <strong>Fase 1 de Horizon 2020</strong> (Sello de Excelencia). Misión comercial a Países Bajos con ACCIÓ. Acuerdo de colaboración con ACES.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6070497651021930496"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6070497651021930496_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Validated ID ha sido seleccionada para la primera fase del Horizon2020. 
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2019</div>
-        <div class="timeline-title">Expansion Global y Firma Biométrica</div>
-        <div class="timeline-description">
-          Año de crecimiento acelerado. Validated ID expande en múltiples mercados (Alemania, Francia, Reino Unido), introduce la firma biométrica para escenarios presenciales, y establece alianzas clave en el sector sanitario y administrativo.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+HORIZON 2020 es el programa que financia proyectos de investigació…</div><div class="pc-date">12/11/2015</div></div></a><a class="pc" href="linkedin.html#6082271686357499904"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6082271686357499904_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Gafas 3D para invidentes http://sco.lt/8Xwtij un proyecto basado en unas gafas capaces de reconocer lo que hay a nuestro alrededor y transfo…</div><div class="pc-date">14/12/2015</div></div></a><a class="pc" href="linkedin.html#6060352757171306496"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6060352757171306496_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Hoy Santi Casas, CEO de Validated ID entrevistado por el Diario Expansión:  &quot; Biometría y firma electrónica de última generación&quot;.
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2020</div>
-        <div class="timeline-title">Pandemia y Transformación Digital Acelerada</div>
-        <div class="timeline-description">
-          La pandemia cataliza la demanda de firmas electrónicas remotas. Validated ID expande sus integraciones con plataformas empresariales (Salesforce, SAP, DocuWare, SharePoint). Firma remota se convierte en estándar.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+#Validat…</div><div class="pc-date">15/10/2015</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2016">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2016</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">Ronda FFF</div>
+    <p class="year-narrative">Ronda <strong>FFF</strong>. En el MWC se presenta la app para firmar con el DNIe 3.0 via NFC desde el móvil, lanzada como servicio gratuito en <strong>firmacontuDNIe.es</strong> — cubierto por RTVE / Marca España. Segundo Sello de Excelencia H2020. Crecimiento del canal de partners en administración pública.</p>
+    <div class="pc-grid"><a class="pc" href="twitter.html#808384519476744195"><img class="pc-img" src="https://archive.org/download/validatedid-twitter-media/808384519476744195-Czf1Z7HWgAE63vR.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#1da1f2">Twitter/X</span></div><div class="pc-text">Lanzamos nuestro nuevo servicio gratuito de firma con el DNI 3.0 #NFC #DNIe #firmadigital</div><div class="pc-date">12/12/2016</div></div></a><a class="pc" href="linkedin.html#6096420001579888640"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6096420001579888640_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Informe: aplicaciones móviles de salud aprobadas por la FDA plantean riesgos de seguridad \| FMH 
+http://sco.lt/8c0kaX</div><div class="pc-date">22/01/2016</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2017">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2017</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">Nace <strong>VIDchain</strong>, la apuesta por la identidad digital soberana basada en blockchain — el modelo que años después se convertiría en el estándar EUDIW. La compañía supera los <strong>300 clientes</strong> y los <strong>500.000 documentos firmados al año</strong>. Seleccionados para el acelerador <strong>Cuatrecasas Acelera</strong>.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6340129942768009216"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6340129942768009216_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Our CEO Santi Casas talking about #DIF at #JornadaCTIC in Barcelona
+#Blockchain #DecentralizedID</div><div class="pc-date">25/11/2017</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2018">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2018</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">Premio Cuatrecasas</div>
+    <p class="year-narrative"><strong>Ganadores de la II edición de Cuatrecasas Acelera</strong>. VIDchain se presenta a inversores en el 4YFN del MWC. Se unen a <strong>Alastria</strong> y ganan el DemoDay de Alastria en Cataluña. Seleccionados entre los 5 mejores startups catalanas para el <strong>Slush</strong> de Helsinki. Expansión internacional: Crèdit Andorrà y DocuWare Alemania. Clientes de referencia como el Hospital Sant Joan de Déu.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6438391105003278337"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6438391105003278337_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Our node of Alastria Blockchain Ecosystem testnet is activated and running! #BlockChain</div><div class="pc-date">23/08/2018</div></div></a><a class="pc" href="linkedin.html#6473892116195012608"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6473892116195012608_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">We have been selected to attend Slush, world&#x27;s leading startup event, by Catalonia Trade &amp; Investment as one of the top 5 Catalan #startups.…</div><div class="pc-date">29/11/2018</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2019">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2019</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">Ronda inversores</div>
+    <p class="year-narrative">Ronda de inversión con <strong>Randstad Innovation Fund, Caixa Capital Risc y Cuatrecasas Ventures</strong> para consolidar el canal indirecto y acelerar VIDchain. Organizan el <strong>Rebooting Web of Trust 8</strong> en Barcelona. VIDchain, entre los 24 finalistas del premio <strong>EIC "Blockchain for Social Good"</strong> (178 candidatos, 43 países). Inicio de la colaboración con la Comisión Europea en el proyecto <strong>EBSI</strong>.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6532164475238301696"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6532164475238301696_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Ready for 2 great days ahead here in Amsterdam at Europe’s Leading Tech Festival #TNW2019
+Let’s chat about #eSignature and identity solution…</div><div class="pc-date">09/05/2019</div></div></a><a class="pc" href="linkedin.html#6532531211947040768"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6532531211947040768_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Für Szenarien, in denen die qualifizierte Signatur Pflicht ist, bietet unser #ElektronischeSignatur Service #VIDsigner eine biometrische Sig…</div><div class="pc-date">10/05/2019</div></div></a><a class="pc" href="linkedin.html#6501087878976716800"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6501087878976716800_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Working together with Nacho Alamillo Domingo to find the way to align #SSI with #eIDAS http://ow.ly/9GRV30nFqqV. We&#x27;ll be sponsoring #RWoT8…</div><div class="pc-date">12/02/2019</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2020">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2020</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">Respuesta al COVID-19: <strong>firmas ilimitadas gratuitas</strong> para cualquier organización. Trabajo activo en el <strong>ESSIF</strong> (European Self-Sovereign Identity Framework) dentro de EBSI. Ivan Basart en el jurado de la European Blockchain Convention junto a representantes de Banco Santander y Mastercard.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6623160128789061632"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6623160128789061632_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">❗️❗️Última oportunidad para apuntarse al evento de MAÑANA en Barcelona sobre cómo el Parc Sanitari Sant Joan de Deu y su director de RRHH, X…</div><div class="pc-date">15/01/2020</div></div></a><a class="pc" href="linkedin.html#6681890016848826368"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6681890016848826368_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Validated ID showcased it’s Self-Issued OpenID Provider (SIOP) protocol for using a DID to sign in to an OpenID website. The authorization l…</div><div class="pc-date">25/06/2020</div></div></a><a class="pc" href="linkedin.html#6624975741614333952"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6624975741614333952_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Meet our CTO Ivan Basart this evening at European Blockchain Convention, Barcelona 2020. He&#x27;ll be a part of the debate about Blockchain Tech…</div><div class="pc-date">20/01/2020</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2021">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2021</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">EUDIW anunciado</div>
+    <p class="year-narrative">El <strong>4 de junio</strong>, la UE anuncia el marco de la European Digital Identity Wallet: exactamente el modelo que Validated ID llevaba cuatro años construyendo. <strong>Ganadores de Start4Big</strong> (192 proyectos compitiendo, con CaixaBank, SEAT y Telefónica entre los socios). Financiación <strong>CDTI</strong> para VIDchain.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6806554965239218176"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6806554965239218176_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">After four years working and promoting decentralised identities (SSI) in different international forums, two of which we have worked for the…</div><div class="pc-date">04/06/2021</div></div></a><a class="pc" href="linkedin.html#6770678352740179968"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6770678352740179968_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">We did it! Winners in the second edition of #Start4big 💥🏅 out of 192 projects to implement real solutions in digital identity and biometric…</div><div class="pc-date">25/02/2021</div></div></a><a class="pc" href="linkedin.html#6756851902320820224"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6756851902320820224_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Meet us tomorrow at the Second open online virtual meeting organized by the Decentralized Identity Foundation.  
+Our #VIDchain PM, Xavier Vi…</div><div class="pc-date">18/01/2021</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2022">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2022</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">Primeros EBSI conformant</div>
+    <p class="year-narrative"><strong>VIDchain es la primera solución del mundo en ser conforme con EBSI</strong>, cubriendo los cuatro casos de uso (diploma, carné estudiantil, identidad, PDA1). Primera certificación <strong>HDS en Francia</strong> para un proveedor de firma electrónica. <strong>600 municipios</strong> en España usan VIDsigner.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#6897480160845926400"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6897480160845926400_image_0.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Ivan Basart, CTO de Validated ID, inicia la jornada hablando de la identidad digital y el cambio de modelo de eIDAS a eIDAS2, junto con otro…</div><div class="pc-date">10/02/2022</div></div></a><a class="pc" href="linkedin.html#6909442984321105920"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_6909442984321105920_article_thumbnail.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Muchos #ayuntamientos utilizan ya los servicios de firma electrónica de #VIDsigner para facilitar los trámites presenciales de atención ciud…</div><div class="pc-date">15/03/2022</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2023">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2023</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">VIDwallet repite conformidad EBSI: <strong>el único wallet con los cuatro casos de uso superados</strong>. Seleccionados para el <strong>EWC Large Scale Pilot</strong> (60+ socios europeos liderado por Suecia y Finlandia). Más de <strong>23.000 empresas y autónomos</strong> usan pimefactura.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#7016351798470819840"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7016351798470819840_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">💡 Are you our #Partner and offer solutions that can be integrated with #VIDsigner? Appearing on our #marketplace gives you more visibility a…</div><div class="pc-date">04/01/2023</div></div></a><a class="pc" href="linkedin.html#7036312107469975553"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7036312107469975553_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">We have some exciting news to share with you today! 
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2021</div>
-        <div class="timeline-title">Firma Centralizada y Estándares Europeos</div>
-        <div class="timeline-description">
-          Introducción de firma centralizada para certificados digitales. Validated ID se alinea con estándares europeos (idCAT, EBSI) y expande en el sector educativo y sanitario.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+We are now officially part of the large-scale European Digital Identity Wallet (#EWC)…</div><div class="pc-date">28/02/2023</div></div></a><a class="pc" href="linkedin.html#7061264174516977664"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7061264174516977664_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">Aumenta tu productividad empresarial y mantén una seguridad de primer nivel con #VIDsigner integrado en #Sage. 
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2022</div>
-        <div class="timeline-title">VIDchain y Blockchain</div>
-        <div class="timeline-description">
-          Validated ID incursiona en tecnología blockchain con VIDchain, aplicando EBSI. Se expande en educación con casos de éxito universitarios. Lanza VIDsigner DOCS en múltiples idiomas.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+Esta herramienta te permite…</div><div class="pc-date">08/05/2023</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2024">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2024</span>
+  </div>
+  <div class="year-content">
+    
+    <p class="year-narrative">Transferencia de pimefactura a <strong>B2Brouter</strong>, en acuerdo con PIMEC. La compañía se focaliza en eIDAS2 como <strong>qTSP</strong> (Qualified Trust Service Provider). El producto VIDchain/VIDwallet pasa a llamarse <strong>VIDidentity</strong>. Más de <strong>3.000 clientes</strong> VIDsigner y <strong>150+ integraciones</strong> con Sage, DocuWare, SAP, Salesforce y Microsoft.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#7219716394991419392"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7219716394991419392_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">🚀 Mejorando la facturación electrónica en las Pymes 🚀
+Validated ID, B2Brouter y PIMEC han llegado a un acuerdo de colaboración para optimiza…</div><div class="pc-date">18/07/2024</div></div></a><a class="pc" href="linkedin.html#7167940571766898688"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7167940571766898688_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">[#MobileWorldCongress 2024 #Barcelona] If you are curious about what sets us apart as one of the companies the European Commission selected…</div><div class="pc-date">26/02/2024</div></div></a><a class="pc" href="linkedin.html#7150058494325407745"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7150058494325407745_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">📣 [WEBINAR] ¡Este 2024 di adiós al papel!
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2023-2024</div>
-        <div class="timeline-title">VIDwallet y Identidad Digital</div>
-        <div class="timeline-description">
-          Validated ID evolucionó hacia soluciones completas de identidad digital con VIDwallet. Casos de éxito en clínicas (CEMTRO), telecomunicaciones y sector público. Partnership con Swisscom. Participación en MWC 2024 con VIDchain PASSPORT ID.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
-    </div>
+¡3 fechas disponibles! 16 de enero \| 6 de febrero \| 12 de marzo
 
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">2025 y más allá</div>
-        <div class="timeline-title">El futuro de la identidad digital</div>
-        <div class="timeline-description">
-          Validated ID continúa innovando en identidad digital soberana, integraciones empresariales avanzadas, y estándares de próxima generación. El viaje desde la firma digital a la identidad del futuro sigue su curso.
-        </div>
-        <div class="timeline-toggle">Más información</div>
-      </div>
+Descubre de la mano de Fernand…</div><div class="pc-date">08/01/2024</div></div></a></div>
+  </div>
+</div>
+<div class="year-section" id="y2025">
+  <div class="year-marker">
+    <div class="year-dot"></div>
+    <span class="year-num">2025</span>
+  </div>
+  <div class="year-content">
+    <div class="milestone-tag">Adquisición Signaturit</div>
+    <p class="year-narrative">En febrero se anuncia la incorporación a <strong>Signaturit Group</strong>; en mayo se cierra oficialmente. Signaturit se integra a su vez en <strong>Namirial</strong>, configurando así el <strong>principal prestador de servicios de confianza de Europa</strong>. El último hito como Validated ID independiente: la firma del acuerdo institucional para promover Gobiernos Locales Inteligentes en el Congrés de Govern Digital de Barcelona, con la Generalitat, el Ajuntament de Barcelona, las cuatro Diputaciones, AOC y Localret — firmado con VIDsignerBIO.</p>
+    <div class="pc-grid"><a class="pc" href="linkedin.html#7293193939040272385"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7293193939040272385_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">📣 [ESP] Noticias emocionantes: ¡Validated ID une fuerzas con Signaturit Group! Estamos orgullosos de compartir que Validated ID pasa a forma…</div><div class="pc-date">06/02/2025</div></div></a><a class="pc" href="linkedin.html#7401962549656596480"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_share_7401962549656596480_media.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">𝗚𝗿𝗮𝗰𝗶𝗮𝘀 𝗽𝗼𝗿 𝗮𝗰𝗼𝗺𝗽𝗮ñ𝗮𝗿𝗻𝗼𝘀 𝗲𝗻 𝗲𝘀𝘁𝗲 𝗽𝗲𝗿𝗳𝗶𝗹 𝗱𝘂𝗿𝗮𝗻𝘁𝗲 𝘁𝗼𝗱𝗼 𝗲𝘀𝘁𝗲 𝘁𝗶𝗲𝗺𝗽𝗼. 💚 
+Ahora damos un paso adelante y centralizamos toda la información en Sig…</div><div class="pc-date">03/12/2025</div></div></a><a class="pc" href="linkedin.html#urn-li-ugcPost-7305592795325489152"><img class="pc-img" src="https://archive.org/download/validatedid-linkedin-media/urn_li_ugcPost_7305592795325489152_image_0.jpg" loading="lazy" alt=""><div class="pc-body"><div class="pc-badges"><span class="pc-net" style="background:#0077b5">LinkedIn</span></div><div class="pc-text">✅ VIDsigner BIO,  clau en l&#x27;acte de signatura de l&#x27;Acord Institucionall 🔏 en el Congrés Govern Digital 2025 #CGD2025
+
+Avui, gràcies a #VIDsi…</div><div class="pc-date">12/03/2025</div></div></a></div>
+  </div>
+</div>
+  </div>
+
+  <div class="epilogue">
+    <div class="epilogue-title">En el momento de la integración en Signaturit (2025)</div>
+    <div class="epilogue-stats">
+      <div class="stat"><span class="stat-num">5.000</span><span class="stat-label">clientes</span></div>
+      <div class="stat"><span class="stat-num">350</span><span class="stat-label">partners</span></div>
+      <div class="stat"><span class="stat-num">20M</span><span class="stat-label">firmas / año</span></div>
     </div>
-  </section>
-</main>
+  </div>
+</div>
 
 <footer>
-  Archivo personal · Vídeos alojados en <a href="https://archive.org" target="_blank">Internet Archive</a> · Validated ID (2016–2025)
+  Archivo histórico &middot; Media alojado en <a href="https://archive.org" target="_blank">Internet Archive</a> &middot; Validated ID (2012&ndash;2026)
 </footer>
-
-<script>
-  document.querySelectorAll('.timeline-toggle').forEach(toggle => {
-    toggle.addEventListener('click', function() {
-      const content = this.closest('.timeline-content');
-      content.classList.toggle('expanded');
-    });
-  });
-</script>
 
 </body>
 </html>

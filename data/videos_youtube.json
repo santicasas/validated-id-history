@@ -7,7 +7,8 @@
     "title": "firmacontudnie.es",
     "date": "28/11/2016",
     "year": "2016",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -17,7 +18,11 @@
     "title": "VIDsigner - Administración sin papeles",
     "date": "10/01/2017",
     "year": "2017",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "administracion_publica"
+    ]
   },
   {
     "source": "youtube",
@@ -27,7 +32,8 @@
     "title": "DocuSign integration",
     "date": "26/05/2017",
     "year": "2017",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -37,7 +43,10 @@
     "title": "VIDidnetity, building the digital identity of tomorrow",
     "date": "27/03/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "youtube",
@@ -47,7 +56,11 @@
     "title": "RIC.DOC DocuWare CENTRALIZED Signature",
     "date": "18/04/2019",
     "year": "2019",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -57,7 +70,11 @@
     "title": "RIC.DOC DocuWare REMOTE Signature",
     "date": "18/04/2019",
     "year": "2019",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -67,7 +84,8 @@
     "title": "FORO INCYDE",
     "date": "26/04/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -77,7 +95,10 @@
     "title": "VIDsigner, together we connect better",
     "date": "08/05/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -87,7 +108,10 @@
     "title": "Send2sign: Firma Electrónica Digital",
     "date": "13/05/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -97,7 +121,10 @@
     "title": "DocTech VIDsigner Integration - 2 Documents",
     "date": "29/07/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -107,7 +134,10 @@
     "title": "DocTech VIDsigner Integration   1 Document Clipped",
     "date": "29/07/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -117,7 +147,12 @@
     "title": "Firma digital biometrica para salud: Qbed Consulting",
     "date": "11/10/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "firma_biometrica",
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -127,7 +162,12 @@
     "title": "La solución de firma digital biométrica para las Administraciones Públicas",
     "date": "24/10/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "firma_biometrica",
+      "administracion_publica"
+    ]
   },
   {
     "source": "youtube",
@@ -137,7 +177,10 @@
     "title": "Remote signature - FOR ANYONE AND ANYWHERE",
     "date": "28/10/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -147,7 +190,10 @@
     "title": "Partners Dinner MADRID 2019",
     "date": "30/10/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -157,7 +203,11 @@
     "title": "Caso de Éxito en Cunit: Firma electrónica para AAPP",
     "date": "04/11/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "administracion_publica"
+    ]
   },
   {
     "source": "youtube",
@@ -167,7 +217,10 @@
     "title": "Integración VIDsigner con Gladtolink para Inspecciones Públicas",
     "date": "04/11/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -177,7 +230,10 @@
     "title": "Validated ID and m.Doc GmbH enter into a strategic partnership",
     "date": "20/11/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -187,7 +243,11 @@
     "title": "Caso de Éxito en Parc Sanitari Sant Joan de Déu: Firma electronica para Recursos Humanos",
     "date": "12/12/2019",
     "year": "2019",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -197,7 +257,11 @@
     "title": "Success Case of Parc Sanitari Sant Joan de Déu: Electronic signature for Human Resources",
     "date": "13/12/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -207,7 +271,11 @@
     "title": "Biometric signature - the solution for face-to-face scenarios",
     "date": "16/12/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "firma_biometrica"
+    ]
   },
   {
     "source": "youtube",
@@ -217,7 +285,12 @@
     "title": "Cas d'usage du Parc Sanitari Sant Joan de Déu: Signature électronique pour les Ressources Humaines",
     "date": "18/12/2019",
     "year": "2019",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica",
+      "salud",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -227,7 +300,10 @@
     "title": "Erfolgsfall des Parc Sanitari Sant Joan de Déu: Elektronische Signatur für Human Resources",
     "date": "18/12/2019",
     "year": "2019",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -237,7 +313,11 @@
     "title": "Zero Paper commitment - We've planted over 100 trees, one for each one of our partners",
     "date": "24/12/2019",
     "year": "2019",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "administracion_publica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -247,7 +327,8 @@
     "title": "Biometrische Signatur - die Lösung für Präsenz-Szenarien",
     "date": "07/01/2020",
     "year": "2020",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -257,7 +338,10 @@
     "title": "Firma Biométrica - la solución para escenarios presenciales",
     "date": "07/01/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_biometrica"
+    ]
   },
   {
     "source": "youtube",
@@ -267,7 +351,11 @@
     "title": "Biometric signature solution for Public Administrations",
     "date": "09/01/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "firma_biometrica"
+    ]
   },
   {
     "source": "youtube",
@@ -277,7 +365,8 @@
     "title": "Die biometrische digitale Signaturlösung für öffentliche Verwaltungen",
     "date": "09/01/2020",
     "year": "2020",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -287,7 +376,8 @@
     "title": "Firma Remote - PARA CUALQUIER PERSONA Y EN CUALQUIER LUGAR",
     "date": "09/01/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -297,7 +387,10 @@
     "title": "Remote signature - FÜR JEDEN UND ÜBERALL",
     "date": "09/01/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -307,7 +400,10 @@
     "title": "Signature à distance - POUR N'IMPORTE QUI ET N'IMPORTE OÙ",
     "date": "09/01/2020",
     "year": "2020",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -317,7 +413,10 @@
     "title": "Signatures numériques pour les administrations publiques et mairies",
     "date": "09/01/2020",
     "year": "2020",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -327,7 +426,12 @@
     "title": "Biometric signature integration for medical software Ofimedic 7.3.1",
     "date": "21/01/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "firma_biometrica",
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -337,7 +441,10 @@
     "title": "SIGNATURE BIO, LA SOLUTION POUR LES SCENARIOS PRESENTIELS",
     "date": "23/01/2020",
     "year": "2020",
-    "lang": "FR"
+    "lang": "FR",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -347,7 +454,10 @@
     "title": "VIDsigner : LA FAÇON LA PLUS SÛRE ET LA PLUS FACILE D'OBTENIR DES SIGNATURES ÉLECTRONIQUES",
     "date": "17/02/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -357,7 +467,10 @@
     "title": "Digital Future Congress | Validated ID & Optanium",
     "date": "24/02/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -367,7 +480,10 @@
     "title": "CNIS 2020",
     "date": "04/03/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -377,7 +493,10 @@
     "title": "DocuWorld 2020 - Integration der digitalen Signatur von Validated ID mit DocuWare",
     "date": "04/05/2020",
     "year": "2020",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -387,7 +506,11 @@
     "title": "DocuWorld 2020 - Validated ID's digital signatures integration with Docuware",
     "date": "04/05/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -397,7 +520,10 @@
     "title": "[Webinar] RICsigner: Firmas digitales",
     "date": "27/05/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -407,7 +533,10 @@
     "title": "Integration between Success Factors and VIDsigner's electronic signatures for documents (Summary)",
     "date": "25/06/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -417,7 +546,10 @@
     "title": "VIDsigner: LA FORMA MÁS SEGURA Y FÁCIL DE OBTENER FIRMAS ELECTRÓNICAS",
     "date": "13/07/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -427,7 +559,11 @@
     "title": "Integración de la firma digital VIDsigner con Salesforce",
     "date": "14/07/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -437,7 +573,11 @@
     "title": "VIDsigner electronic signatures integrated in Sage X3",
     "date": "27/08/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -447,7 +587,10 @@
     "title": "Integración Send2sign con firmas electrónicas VIDsigner para Sharepoint",
     "date": "02/09/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -457,7 +600,10 @@
     "title": "Integración de firma electrónica VIDsigner con Autofirma",
     "date": "07/09/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -467,7 +613,11 @@
     "title": "Firmas electrónicas VIDsigner integradas en Sage X3",
     "date": "21/09/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -477,7 +627,11 @@
     "title": "Integración de firma digital VIDsigner para SAGE 200c",
     "date": "21/09/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -487,7 +641,11 @@
     "title": "Integracion de firma digital VIDsigner para SAGE Despachos Connected",
     "date": "21/09/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -497,7 +655,10 @@
     "title": "Integración VIDsigner con RIC.DOC",
     "date": "25/09/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -507,7 +668,10 @@
     "title": "Legalidad de la firma electrónica y firma digital en Colombia: VIDsigner",
     "date": "01/10/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -517,7 +681,10 @@
     "title": "Ventajas de la firma electrónica con Summan & Validated ID",
     "date": "05/10/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -527,7 +694,11 @@
     "title": "DEMO Firma biométrica en Simplifica 3 0",
     "date": "29/10/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_biometrica",
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -537,7 +708,10 @@
     "title": "Copia de: CERES 2018 NUEVAS TENDENCIAS DE IDENTIDAD Y FIRMA  DE LA BIOMETRIA AL BLOCKCHAIN",
     "date": "11/11/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "blockchain"
+    ]
   },
   {
     "source": "youtube",
@@ -547,7 +721,11 @@
     "title": "Gestión de firmas electrónicas VIDsigner con Sage X3",
     "date": "11/11/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -557,7 +735,11 @@
     "title": "Demo firma biométrica desde el ERP e-Satellite de Freematica con el servicio de Validated ID",
     "date": "12/11/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_biometrica",
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -567,7 +749,10 @@
     "title": "Demo firma remota de documentos desde el ERP e-Satellite de Freematica con Validated ID",
     "date": "12/11/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -577,7 +762,10 @@
     "title": "Remote electronic signature with Send2sign",
     "date": "17/11/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -587,7 +775,11 @@
     "title": "VIDsigner digital signature integration with Salesforce",
     "date": "17/11/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -597,7 +789,10 @@
     "title": "Integration of Validated ID Remote signature with Swisscom",
     "date": "25/11/2020",
     "year": "2020",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -607,7 +802,10 @@
     "title": "Firma electrónica en JD Edwards EnterpriseOne con Send2sign",
     "date": "26/11/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -617,7 +815,8 @@
     "title": "Elektronische Signatur, die speziell auf die Anwendung in JobRouter abzielt",
     "date": "04/12/2020",
     "year": "2020",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -627,7 +826,10 @@
     "title": "Integración entre las firmas electrónicas de Validated ID con SAP S 4HANA y ECC",
     "date": "14/12/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -637,7 +839,10 @@
     "title": "Integración entre Success Factors y la firma electrónica de documentos de VIDsigner (Extendida)",
     "date": "14/12/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -647,7 +852,10 @@
     "title": "Integración entre Success Factors y la firma electrónica de documentos de VIDsigner (Resumen)",
     "date": "14/12/2020",
     "year": "2020",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -657,7 +865,10 @@
     "title": "Integración firma electrónica con DataFlex",
     "date": "11/01/2021",
     "year": "2021",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -667,7 +878,10 @@
     "title": "Integración de las firmas electrónicas de Validated ID y SAP FIORI",
     "date": "03/02/2021",
     "year": "2021",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -677,7 +891,10 @@
     "title": "Electronic signature integration with DataFlex",
     "date": "05/02/2021",
     "year": "2021",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -687,7 +904,10 @@
     "title": "Integration of the electronic signature service VIDsigner with JobRouter",
     "date": "23/02/2021",
     "year": "2021",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -697,7 +917,8 @@
     "title": "Swisscom Trust Services und Validated ID",
     "date": "28/04/2021",
     "year": "2021",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -707,7 +928,11 @@
     "title": "VIDsigner Biometric Signature with PDF and Forensic",
     "date": "30/04/2021",
     "year": "2021",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica",
+      "firma_biometrica"
+    ]
   },
   {
     "source": "youtube",
@@ -717,7 +942,10 @@
     "title": "ASPE Webinar sobre Innovación Tecnológica en la Sanidad Privada",
     "date": "05/05/2021",
     "year": "2021",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -727,7 +955,10 @@
     "title": "Signature électronique spécifiquement destinée à être utilisée dans JobRouter",
     "date": "14/05/2021",
     "year": "2021",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -737,7 +968,8 @@
     "title": "Envía, firma, recibe y almacena los documentos con Validated ID y OpenHR",
     "date": "15/06/2021",
     "year": "2021",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -747,7 +979,10 @@
     "title": "VIDsigner Remote amb idCAT mòbil Vàlid pel sector públic CAT",
     "date": "18/08/2021",
     "year": "2021",
-    "lang": "CA"
+    "lang": "CA",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -757,7 +992,10 @@
     "title": "Centralized Signature - The easiest way to sign with digital certificate",
     "date": "17/09/2021",
     "year": "2021",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -767,7 +1005,10 @@
     "title": "Firma centralizada - La forma más fácil de firmar con certificado digital",
     "date": "17/09/2021",
     "year": "2021",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -777,7 +1018,10 @@
     "title": "Signature centralisée - Le moyen le plus simple de signer avec un certificat numérique",
     "date": "17/09/2021",
     "year": "2021",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -787,7 +1031,8 @@
     "title": "Zentralisierte Signatur - Der einfachste Weg, um mit einem digitalen Zertifikat zu unterschreiben",
     "date": "17/09/2021",
     "year": "2021",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -797,7 +1042,8 @@
     "title": "Validated ID_VIDchain EBSI",
     "date": "10/01/2022",
     "year": "2022",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -807,7 +1053,10 @@
     "title": "Caso de Éxito Universidad de Finis Terrae: Firma electronica en el sector educativo",
     "date": "20/01/2022",
     "year": "2022",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -817,7 +1066,10 @@
     "title": "Étude de cas Université de Finis Terrae : signature électronique dans le secteur de l'éducation",
     "date": "20/01/2022",
     "year": "2022",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -827,7 +1079,10 @@
     "title": "Success Story with Finis Terrae University: Electronic signature in the educational sector",
     "date": "20/01/2022",
     "year": "2022",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -837,7 +1092,10 @@
     "title": "Die Erfolgsgeschichte von der Universität Finis Terrae: Elektronische Signaturen im Bildungssektor",
     "date": "28/02/2022",
     "year": "2022",
-    "lang": "DE"
+    "lang": "DE",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -847,7 +1105,10 @@
     "title": "VIDsigner DOCS DE",
     "date": "14/07/2022",
     "year": "2022",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -857,7 +1118,10 @@
     "title": "VIDsigner DOCS ENG",
     "date": "14/07/2022",
     "year": "2022",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -867,7 +1131,10 @@
     "title": "VIDsigner DOCS ESP",
     "date": "14/07/2022",
     "year": "2022",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -877,7 +1144,10 @@
     "title": "VIDsigner DOCS FR",
     "date": "14/07/2022",
     "year": "2022",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -887,7 +1157,10 @@
     "title": "Firma Digital VIDsigner integrada en Ekon",
     "date": "03/10/2022",
     "year": "2022",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "youtube",
@@ -897,7 +1170,11 @@
     "title": "VIDwallet and VIDsigner Centralized",
     "date": "11/04/2023",
     "year": "2023",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica",
+      "identidad_digital"
+    ]
   },
   {
     "source": "youtube",
@@ -907,7 +1184,8 @@
     "title": "star4big Validated ID",
     "date": "26/09/2023",
     "year": "2023",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": []
   },
   {
     "source": "youtube",
@@ -917,7 +1195,11 @@
     "title": "Clínica CEMTRO y VIDwallet",
     "date": "31/10/2023",
     "year": "2023",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "identidad_digital",
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -927,7 +1209,10 @@
     "title": "Video VIDpartners 2023",
     "date": "31/10/2023",
     "year": "2023",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -937,7 +1222,10 @@
     "title": "Clínica CEMTRO - Proceso de autoadmisión de pacientes FisioClub & Sports",
     "date": "01/02/2024",
     "year": "2024",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -947,7 +1235,11 @@
     "title": "TRUSSIHEALTH Demo",
     "date": "01/02/2024",
     "year": "2024",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "identidad_digital",
+      "salud"
+    ]
   },
   {
     "source": "youtube",
@@ -957,7 +1249,11 @@
     "title": "Firma electrónica integradas con DocuWare",
     "date": "05/03/2024",
     "year": "2024",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "youtube",
@@ -967,7 +1263,10 @@
     "title": "VIDidentity, construyendo la identidad digital del mañana",
     "date": "28/08/2024",
     "year": "2024",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "youtube",
@@ -977,7 +1276,10 @@
     "title": "VIDchain PASSPORT ID MWC 24",
     "date": "17/09/2024",
     "year": "2024",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -987,7 +1289,11 @@
     "title": "VIDpartners 2024 Evento anual de Partners de Validated ID",
     "date": "15/10/2024",
     "year": "2024",
-    "lang": "ES"
+    "lang": "ES",
+    "categories": [
+      "partners",
+      "eventos"
+    ]
   },
   {
     "source": "youtube",
@@ -997,7 +1303,10 @@
     "title": "Electronic signature of Delivery Notes in SharePoint | VIDsigner integration by Nextret",
     "date": "27/05/2025",
     "year": "2025",
-    "lang": "EN"
+    "lang": "EN",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1009,7 +1318,8 @@
     "year": "2024",
     "lang": "ES",
     "yt_id": "mk8LbOtQJRw",
-    "author": "MAINSTREAM VIDEO"
+    "author": "MAINSTREAM VIDEO",
+    "categories": []
   },
   {
     "source": "externs-youtube-channel",
@@ -1021,7 +1331,8 @@
     "year": "2021",
     "lang": "CA",
     "yt_id": "DmglG0lT0pw",
-    "author": "Congrés Govern Digital"
+    "author": "Congrés Govern Digital",
+    "categories": []
   },
   {
     "source": "externs-youtube-channel",
@@ -1033,7 +1344,10 @@
     "year": "2021",
     "lang": "",
     "yt_id": "gEznXWbEel8",
-    "author": "Fundación Industrial Navarra"
+    "author": "Fundación Industrial Navarra",
+    "categories": [
+      "eventos"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1045,7 +1359,10 @@
     "year": "2021",
     "lang": "",
     "yt_id": "NShtT0f9EXY",
-    "author": "Cegid Iberia"
+    "author": "Cegid Iberia",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "validatedid-youtube-channel",
@@ -1057,7 +1374,10 @@
     "year": "2020",
     "lang": "ES",
     "yt_id": "UJ0A6fqEfoI",
-    "author": "Validated ID | Signaturit Group"
+    "author": "Validated ID | Signaturit Group",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "validatedid-youtube-channel",
@@ -1069,7 +1389,11 @@
     "year": "2020",
     "lang": "ES",
     "yt_id": "sKGym2jvy4I",
-    "author": "Validated ID | Signaturit Group"
+    "author": "Validated ID | Signaturit Group",
+    "categories": [
+      "firma_electronica",
+      "partners"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1081,7 +1405,10 @@
     "year": "2020",
     "lang": "",
     "yt_id": "o-ILxqIexcs",
-    "author": "QualitaHUB"
+    "author": "QualitaHUB",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1093,7 +1420,10 @@
     "year": "2020",
     "lang": "",
     "yt_id": "P28adp1zARg",
-    "author": "Decentralized Identity Foundation"
+    "author": "Decentralized Identity Foundation",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1105,7 +1435,10 @@
     "year": "2020",
     "lang": "",
     "yt_id": "05bfFzOxpjI",
-    "author": "NewSoft IT"
+    "author": "NewSoft IT",
+    "categories": [
+      "firma_electronica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1117,7 +1450,8 @@
     "year": "2020",
     "lang": "",
     "yt_id": "DvVT4TY9jKA",
-    "author": "Startup Grind Local"
+    "author": "Startup Grind Local",
+    "categories": []
   },
   {
     "source": "externs-youtube-channel",
@@ -1129,7 +1463,8 @@
     "year": "2020",
     "lang": "ES",
     "yt_id": "Zjgwaigajz4",
-    "author": "Companies for Good"
+    "author": "Companies for Good",
+    "categories": []
   },
   {
     "source": "externs-youtube-channel",
@@ -1141,7 +1476,10 @@
     "year": "2019",
     "lang": "",
     "yt_id": "tChzD_Tc6A0",
-    "author": "Campus UVic |  UVic-UCC"
+    "author": "Campus UVic |  UVic-UCC",
+    "categories": [
+      "administracion_publica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1153,7 +1491,10 @@
     "year": "2019",
     "lang": "EN",
     "yt_id": "2g6KSv1aeuI",
-    "author": "Bitcoin Lectures"
+    "author": "Bitcoin Lectures",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1165,7 +1506,10 @@
     "year": "2018",
     "lang": "EN",
     "yt_id": "6O_iJnhIh5o",
-    "author": "SSI Meetup"
+    "author": "SSI Meetup",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1177,7 +1521,10 @@
     "year": "2018",
     "lang": "",
     "yt_id": "Yq8yFYdCnxU",
-    "author": "SSI Meetup"
+    "author": "SSI Meetup",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1189,7 +1536,11 @@
     "year": "2018",
     "lang": "",
     "yt_id": "AKGHgBjc3H8",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": [
+      "firma_biometrica",
+      "eventos"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1201,7 +1552,10 @@
     "year": "2018",
     "lang": "ES",
     "yt_id": "pyzNgdMRw0c",
-    "author": "Congrés Govern Digital"
+    "author": "Congrés Govern Digital",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1213,7 +1567,10 @@
     "year": "2018",
     "lang": "ES",
     "yt_id": "hrrmUihUwCw",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": [
+      "firma_biometrica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1225,7 +1582,11 @@
     "year": "2017",
     "lang": "ES",
     "yt_id": "-N4Wes-vrf8",
-    "author": "Eurecat"
+    "author": "Eurecat",
+    "categories": [
+      "eventos",
+      "blockchain"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1237,7 +1598,8 @@
     "year": "2017",
     "lang": "",
     "yt_id": "aNEupeMNcDg",
-    "author": "Ajuntament de Cunit"
+    "author": "Ajuntament de Cunit",
+    "categories": []
   },
   {
     "source": "externs-youtube-channel",
@@ -1249,7 +1611,11 @@
     "year": "2017",
     "lang": "ES",
     "yt_id": "q5kLKxL7X8E",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": [
+      "firma_biometrica",
+      "administracion_publica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1261,7 +1627,10 @@
     "year": "2017",
     "lang": "CA",
     "yt_id": "lPh4oJ_sLRI",
-    "author": "Congrés Govern Digital"
+    "author": "Congrés Govern Digital",
+    "categories": [
+      "firma_biometrica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1273,7 +1642,11 @@
     "year": "2016",
     "lang": "",
     "yt_id": "2B7x4xew46Q",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": [
+      "firma_biometrica",
+      "eventos"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1285,7 +1658,11 @@
     "year": "2016",
     "lang": "ES",
     "yt_id": "LTmuFRbW46I",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": [
+      "eventos",
+      "corporativo"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1297,7 +1674,10 @@
     "year": "2015",
     "lang": "ES",
     "yt_id": "ZKR3sJ17gK4",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": [
+      "administracion_publica"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1309,7 +1689,10 @@
     "year": "2015",
     "lang": "CA",
     "yt_id": "OQBVeSFOVQg",
-    "author": "AOC"
+    "author": "AOC",
+    "categories": [
+      "salud"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1321,7 +1704,8 @@
     "year": "2014",
     "lang": "EN",
     "yt_id": "Kb56GzQ2pSk",
-    "author": "Nat Sakimura"
+    "author": "Nat Sakimura",
+    "categories": []
   },
   {
     "source": "externs-youtube-channel",
@@ -1333,7 +1717,10 @@
     "year": "2013",
     "lang": "CA",
     "yt_id": "TCUR7qWIvvk",
-    "author": "Barcelona.cat"
+    "author": "Barcelona.cat",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1345,7 +1732,10 @@
     "year": "2022",
     "lang": "CA",
     "yt_id": "-tQGH6LQ1KQ",
-    "author": "Alastria Blockchain oficial"
+    "author": "Alastria Blockchain oficial",
+    "categories": [
+      "identidad_digital"
+    ]
   },
   {
     "source": "externs-youtube-channel",
@@ -1357,6 +1747,7 @@
     "year": "2017",
     "lang": "ES",
     "yt_id": "Z5orzx0I-dI",
-    "author": "TribucleMedia VideoVault"
+    "author": "TribucleMedia VideoVault",
+    "categories": []
   }
 ]

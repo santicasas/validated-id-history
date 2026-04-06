@@ -19,6 +19,19 @@ from datetime import datetime, timezone
 # ── CONFIGURACIÓ ──────────────────────────────────────────────────────────────
 NETWORKS_AVAILABLE = ['linkedin', 'instagram', 'facebook', 'twitter']
 
+CATEGORIES = {
+    'firma_electronica':     'Firma electrónica',
+    'firma_biometrica':      'Firma biométrica',
+    'identidad_digital':     'Identidad Digital',
+    'factura_electronica':   'Factura electrónica',
+    'salud':                 'Salud',
+    'administracion_publica':'Administración pública',
+    'partners':              'Partners',
+    'eventos':               'Eventos y ferias',
+    'blockchain':            'Blockchain',
+    'corporativo':           'Corporativo',
+}
+
 CONTENT_TYPE_LABELS = {
     'article':    '📰 Artículo',
     'media':      '📷 Imagen',
@@ -154,26 +167,43 @@ COMMON_CSS = """
     border-right: 1px solid #2a3a5a;
   }
 
-  .filter-section { margin-bottom: 1.5rem; }
-  .filter-title {
+  .filter-section { border-bottom: 1px solid #1e2a4a; }
+  .filter-section-header {
+    display: flex; align-items: center;
+    padding: 0.5rem 0; cursor: pointer; user-select: none;
+  }
+  .filter-section-title {
     font-size: 0.7rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 1px;
-    color: #00BF71; margin-bottom: 0.6rem;
+    color: #00BF71; flex: 1;
   }
-  .checkbox-label {
-    display: flex; align-items: center; gap: 0.5rem;
-    padding: 0.3rem 0; cursor: pointer;
-    font-size: 0.88rem; color: #ccd6f6; user-select: none;
+  .filter-section-badge {
+    font-size: 0.65rem; background: #00BF71; color: #0d1229;
+    border-radius: 10px; padding: 0 6px; font-weight: 700;
+    margin-right: 0.3rem; min-width: 18px; text-align: center;
   }
-  .checkbox-label:hover { color: #fff; }
-  .checkbox-label input[type=checkbox] {
-    accent-color: #00BF71; width: 14px; height: 14px; cursor: pointer;
+  .filter-section-arrow {
+    font-size: 0.55rem; color: #8892b0;
+    transition: transform 0.2s; display: inline-block;
   }
+  .filter-section-arrow.open { transform: rotate(90deg); }
+  .filter-section-body { display: none; padding-bottom: 0.5rem; }
+  .filter-section-body.open { display: block; }
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
+  .filter-chip {
+    background: #1a2a4a; color: #8892b0;
+    border: 1px solid #2a3a5a; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 0.2rem 0.45rem; cursor: pointer;
+    user-select: none; transition: all 0.15s; line-height: 1.4;
+  }
+  .filter-chip:hover { border-color: #00BF71; color: #ccd6f6; }
+  .filter-chip.active { background: #00BF71; color: #0d1229; border-color: #00BF71; }
   .clear-btn {
     width: 100%; background: transparent;
     border: 1px solid #2a3a5a; color: #8892b0;
     padding: 0.4rem 0.8rem; border-radius: 4px;
-    cursor: pointer; font-size: 0.82rem; margin-top: 0.5rem; transition: all 0.2s;
+    cursor: pointer; font-size: 0.82rem; margin-top: 0.8rem; transition: all 0.2s;
   }
   .clear-btn:hover { border-color: #00BF71; color: #00BF71; }
 
@@ -187,6 +217,12 @@ COMMON_CSS = """
     padding: 0.12rem 0.45rem; border-radius: 3px; white-space: nowrap;
   }
   .badge-year { background: #00BF71; color: #0d1229; }
+  .badge-cat {
+    background: #1a2a4a; color: #7dd3fc;
+    border: 1px solid #2563eb; border-radius: 3px;
+    font-size: 0.62rem; font-weight: 600;
+    padding: 0.1rem 0.4rem; white-space: nowrap;
+  }
 
   footer {
     background: #0d1229; border-top: 1px solid #2a3a5a;
@@ -209,6 +245,7 @@ COMMON_CSS = """
 
 def html_header(subtitle, active_page):
     nav_pages = [
+        ('historia.html',  'Historia'),
         ('imatges.html',   'Imágenes'),
         ('videos.html',    'Vídeos'),
         ('linkedin.html',  'LinkedIn'),
@@ -237,49 +274,66 @@ def html_footer():
   Archivo histórico &middot; Media alojado en <a href="https://archive.org" target="_blank">Internet Archive</a> &middot; Validated ID (2012&ndash;2026)
 </footer>"""
 
-def year_filter_html(years):
-    html = ''
-    for y in years:
-        html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="{y}"> {y}</label>\n'
-    return html
-
 LANG_LABELS = {
     'ES': 'ES 🇪🇸', 'EN': 'EN 🇬🇧', 'DE': 'DE 🇩🇪',
     'FR': 'FR 🇫🇷', 'CA': 'CA 🟨', 'PT': 'PT 🇵🇹',
 }
 LANG_ORDER = ['ES', 'EN', 'DE', 'FR', 'CA', 'PT']
 
+def filter_section_html(title, chips_html, start_open=False):
+    """Genera una secció de filtre col·lapsable amb chips."""
+    body_cls  = 'filter-section-body' + (' open' if start_open else '')
+    arrow_cls = 'filter-section-arrow' + (' open' if start_open else '')
+    return (f'<div class="filter-section">\n'
+            f'  <div class="filter-section-header" onclick="toggleSection(this)">\n'
+            f'    <span class="filter-section-title">{title}</span>\n'
+            f'    <span class="filter-section-badge" style="display:none"></span>\n'
+            f'    <span class="{arrow_cls}">&#9658;</span>\n'
+            f'  </div>\n'
+            f'  <div class="{body_cls}">\n'
+            f'    <div class="filter-chips">{chips_html}    </div>\n'
+            f'  </div>\n'
+            f'</div>\n')
+
+def year_filter_html(years):
+    chips = ''.join(
+        f'<button class="filter-chip" data-type="year" data-value="{y}" onclick="toggleChip(this)">{y}</button>'
+        for y in years
+    )
+    return filter_section_html('Año', chips)
+
 def lang_filter_html(langs):
     langs_sorted = sorted(langs, key=lambda l: LANG_ORDER.index(l) if l in LANG_ORDER else 99)
-    html = ''
-    for l in langs_sorted:
-        label = LANG_LABELS.get(l, l)
-        html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="{esc(l)}"> {label}</label>\n'
-    return html
+    chips = ''.join(
+        f'<button class="filter-chip" data-type="lang" data-value="{esc(l)}" onclick="toggleChip(this)">{LANG_LABELS.get(l, l)}</button>'
+        for l in langs_sorted
+    )
+    return filter_section_html('Idioma', chips)
+
+def category_filter_html():
+    chips = ''.join(
+        f'<button class="filter-chip" data-type="category" data-value="{key}" onclick="toggleChip(this)">{label}</button>'
+        for key, label in CATEGORIES.items()
+    )
+    return filter_section_html('Categoría', chips, start_open=True)
 
 def get_langs(posts):
     return sorted(set(p.get('lang','') for p in posts if p.get('lang','')),
                   key=lambda l: LANG_ORDER.index(l) if l in LANG_ORDER else 99)
 
 def network_filter_html(networks):
-    """Genera els checkboxes de xarxa/compte per al sidebar d'imatges.html.
-    Per Twitter expandeix els 3 comptes com a filtres individuals."""
-    html = ''
+    """Genera els chips de xarxa/compte per al sidebar d'imatges.html."""
+    chips = ''
     for n in networks:
         if n == 'twitter':
-            # Expandim Twitter en 3 comptes
-            for acc, color in TWITTER_ACCOUNT_COLORS.items():
+            for acc in TWITTER_ACCOUNT_COLORS:
                 key   = f'x:{acc}'
                 label = f'x:@{acc}'
-                html += (f'<label class="checkbox-label">'
-                         f'<input type="checkbox" class="filter-cb" data-type="network" value="{key}">'
-                         f' <span style="background:{color};color:#fff;border-radius:4px;'
-                         f'padding:1px 7px;font-size:11px;font-weight:600">{label}</span>'
-                         f'</label>\n')
+                chips += f'<button class="filter-chip" data-type="network" data-value="{key}" onclick="toggleChip(this)">{label}</button>'
         else:
             label = NETWORK_LABELS.get(n, n)
-            html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="network" value="{n}"> {label}</label>\n'
-    return html
+            chips += f'<button class="filter-chip" data-type="network" data-value="{n}" onclick="toggleChip(this)">{label}</button>'
+    return filter_section_html('Red', chips)
 
 
 # ── GENERADOR: pàgina per xarxa (LinkedIn, Instagram, ...) ────────────────────
@@ -294,16 +348,17 @@ def generate_network_page(network, posts):
     js_posts = []
     for p in posts:
         js_posts.append({
-            'anchor':  p['anchor'],
-            'date':    p['date'],
-            'year':    p['year'],
-            'lang':    p.get('lang', ''),
-            'type':    p.get('content_type', 'none'),
-            'text':    p['text'],
-            'images':  p['images'],
-            'video':   p.get('video'),
-            'url':     p.get('url'),
-            'pageRef': p['page_ref'],
+            'anchor':     p['anchor'],
+            'date':       p['date'],
+            'year':       p['year'],
+            'lang':       p.get('lang', ''),
+            'type':       p.get('content_type', 'none'),
+            'text':       p['text'],
+            'images':     p['images'],
+            'video':      p.get('video'),
+            'url':        p.get('url'),
+            'pageRef':    p['page_ref'],
+            'categories': p.get('categories', []),
         })
 
     posts_json = json.dumps(js_posts, ensure_ascii=False, separators=(',', ':'))
@@ -312,9 +367,11 @@ def generate_network_page(network, posts):
 
     year_filters  = year_filter_html(years)
     lang_filters  = lang_filter_html(langs)
+    cat_filters   = category_filter_html()
 
-    media_filters = """<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="media" value="images"> Con imágenes</label>
-<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="media" value="video"> Con vídeo</label>"""
+    media_chips = ('<button class="filter-chip" data-type="media" data-value="images" onclick="toggleChip(this)">Con imágenes</button>'
+                   '<button class="filter-chip" data-type="media" data-value="video" onclick="toggleChip(this)">Con vídeo</button>')
+    media_filters = filter_section_html('Contenido', media_chips)
 
     html = f"""<!DOCTYPE html>
 <html lang="es">
@@ -512,18 +569,10 @@ def generate_network_page(network, posts):
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="filter-section">
-      <div class="filter-title">Año</div>
-      {year_filters}
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Contenido</div>
-      {media_filters}
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Idioma</div>
-      {lang_filters}
-    </div>
+    {year_filters}
+    {media_filters}
+    {lang_filters}
+    {cat_filters}
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
 
@@ -551,6 +600,7 @@ def generate_network_page(network, posts):
 <script>
 const POSTS = {posts_json};
 const CONTENT_TYPES = {content_type_labels_js};
+const CATEGORIES = {json.dumps(CATEGORIES, ensure_ascii=False)};
 const PAGE_SIZE = {PAGE_SIZE};
 
 let filtered = [...POSTS];
@@ -559,28 +609,47 @@ let lbImages = [];
 let lbVideoUrl = null;
 let lbIdx = 0;
 
+// ── FILTRES UI ────────────────────────────────────────────────────────────────
+function toggleSection(header) {{
+  const body  = header.nextElementSibling;
+  const arrow = header.querySelector('.filter-section-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}}
+function toggleChip(chip) {{
+  chip.classList.toggle('active');
+  const section = chip.closest('.filter-section');
+  const badge   = section.querySelector('.filter-section-badge');
+  const n = section.querySelectorAll('.filter-chip.active').length;
+  badge.textContent   = n;
+  badge.style.display = n ? '' : 'none';
+  applyFilters();
+}}
+function clearFilters() {{
+  document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-section-badge').forEach(b => {{
+    b.textContent = ''; b.style.display = 'none';
+  }});
+  applyFilters();
+}}
+
 // ── FILTRES ───────────────────────────────────────────────────────────────────
 function applyFilters() {{
-  const years  = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
-  const media  = new Set([...document.querySelectorAll('.filter-cb[data-type=media]:checked')].map(c => c.value));
-  const langs  = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
+  const years  = new Set([...document.querySelectorAll('.filter-chip[data-type=year].active')].map(c => c.dataset.value));
+  const media  = new Set([...document.querySelectorAll('.filter-chip[data-type=media].active')].map(c => c.dataset.value));
+  const langs  = new Set([...document.querySelectorAll('.filter-chip[data-type=lang].active')].map(c => c.dataset.value));
+  const cats   = new Set([...document.querySelectorAll('.filter-chip[data-type=category].active')].map(c => c.dataset.value));
   filtered = POSTS.filter(p => {{
     if (years.size > 0 && !years.has(p.year)) return false;
     if (media.has('images') && p.images.length === 0) return false;
     if (media.has('video')  && !p.video)              return false;
     if (langs.size > 0 && !langs.has(p.lang))         return false;
+    if (cats.size  > 0 && !(p.categories || []).some(c => cats.has(c))) return false;
     return true;
   }});
   currentPage = 0;
   renderPage();
 }}
-
-function clearFilters() {{
-  document.querySelectorAll('.filter-cb').forEach(c => c.checked = false);
-  applyFilters();
-}}
-
-document.querySelectorAll('.filter-cb').forEach(cb => cb.addEventListener('change', applyFilters));
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderPage() {{
@@ -639,11 +708,15 @@ function postHTML(p) {{
     ? `<div class="post-media-col">${{mediaColHTML}}</div>`
     : '';
 
+  const catBadges = (p.categories || []).map(c => CATEGORIES[c]
+    ? `<span class="badge badge-cat">${{escHTML(CATEGORIES[c])}}</span>` : '').join('');
+
   return `<div class="post-card" id="${{escAttr(p.anchor)}}">
     <div class="post-header">
       <span class="badge badge-year">${{p.year}}</span>
       <span class="badge badge-type">${{typeLabel}}</span>
       <span class="post-date">${{p.date}}</span>
+      ${{catBadges}}
     </div>
     <div class="post-body">
       <div class="post-text-col">${{textHTML}}${{urlHTML}}</div>
@@ -826,17 +899,18 @@ def generate_imatges(all_posts):
         # Normalitza imatges: Twitter té [{url, alt}], les altres xarxes tenen strings
         imgs = [img['url'] if isinstance(img, dict) else img for img in p['images']]
         js_posts.append({
-            'anchor':    p['anchor'],
-            'network':   p['network'],
-            'account':   p.get('account', ''),
-            'netLabel':  net_label,
-            'filterKey': filter_key,
-            'date':      p['date'],
-            'year':      p['year'],
-            'lang':      p.get('lang', ''),
-            'caption':   truncate(p['text'], 200),
-            'images':    imgs,
-            'pageRef':   page_ref,
+            'anchor':     p['anchor'],
+            'network':    p['network'],
+            'account':    p.get('account', ''),
+            'netLabel':   net_label,
+            'filterKey':  filter_key,
+            'date':       p['date'],
+            'year':       p['year'],
+            'lang':       p.get('lang', ''),
+            'caption':    truncate(p['text'], 200),
+            'images':     imgs,
+            'pageRef':    page_ref,
+            'categories': p.get('categories', []),
         })
 
     posts_json       = json.dumps(js_posts, ensure_ascii=False, separators=(',', ':'))
@@ -846,6 +920,7 @@ def generate_imatges(all_posts):
     year_filters    = year_filter_html(years)
     network_filters = network_filter_html(networks)
     lang_filters_im = lang_filter_html(langs)
+    cat_filters_im  = category_filter_html()
 
     html = f"""<!DOCTYPE html>
 <html lang="es">
@@ -961,18 +1036,10 @@ def generate_imatges(all_posts):
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="filter-section">
-      <div class="filter-title">Año</div>
-      {year_filters}
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Red</div>
-      {network_filters}
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Idioma</div>
-      {lang_filters_im}
-    </div>
+    {year_filters}
+    {network_filters}
+    {lang_filters_im}
+    {cat_filters_im}
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
 
@@ -1001,30 +1068,50 @@ def generate_imatges(all_posts):
 const POSTS = {posts_json};
 const NETWORK_LABELS = {network_labels};
 const NETWORK_COLORS = {network_colors};
+const CATEGORIES = {json.dumps(CATEGORIES, ensure_ascii=False)};
 
 let filtered = [...POSTS];
 let lbVisible = [];
 let lbIdx = 0;
 
-// ── FILTRES ───────────────────────────────────────────────────────────────────
-function applyFilters() {{
-  const years    = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
-  const networks = new Set([...document.querySelectorAll('.filter-cb[data-type=network]:checked')].map(c => c.value));
-  const langs    = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
-  filtered = POSTS.filter(p =>
-    (years.size    === 0 || years.has(p.year)) &&
-    (networks.size === 0 || networks.has(p.filterKey)) &&
-    (langs.size    === 0 || langs.has(p.lang))
-  );
-  renderGrid();
+// ── FILTRES UI ────────────────────────────────────────────────────────────────
+function toggleSection(header) {{
+  const body  = header.nextElementSibling;
+  const arrow = header.querySelector('.filter-section-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }}
-
+function toggleChip(chip) {{
+  chip.classList.toggle('active');
+  const section = chip.closest('.filter-section');
+  const badge   = section.querySelector('.filter-section-badge');
+  const n = section.querySelectorAll('.filter-chip.active').length;
+  badge.textContent   = n;
+  badge.style.display = n ? '' : 'none';
+  applyFilters();
+}}
 function clearFilters() {{
-  document.querySelectorAll('.filter-cb').forEach(c => c.checked = false);
+  document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-section-badge').forEach(b => {{
+    b.textContent = ''; b.style.display = 'none';
+  }});
   applyFilters();
 }}
 
-document.querySelectorAll('.filter-cb').forEach(cb => cb.addEventListener('change', applyFilters));
+// ── FILTRES ───────────────────────────────────────────────────────────────────
+function applyFilters() {{
+  const years    = new Set([...document.querySelectorAll('.filter-chip[data-type=year].active')].map(c => c.dataset.value));
+  const networks = new Set([...document.querySelectorAll('.filter-chip[data-type=network].active')].map(c => c.dataset.value));
+  const langs    = new Set([...document.querySelectorAll('.filter-chip[data-type=lang].active')].map(c => c.dataset.value));
+  const cats     = new Set([...document.querySelectorAll('.filter-chip[data-type=category].active')].map(c => c.dataset.value));
+  filtered = POSTS.filter(p =>
+    (years.size    === 0 || years.has(p.year)) &&
+    (networks.size === 0 || networks.has(p.filterKey)) &&
+    (langs.size    === 0 || langs.has(p.lang)) &&
+    (cats.size     === 0 || (p.categories || []).some(c => cats.has(c)))
+  );
+  renderGrid();
+}}
 
 // ── GRID ──────────────────────────────────────────────────────────────────────
 function renderGrid() {{
@@ -1063,6 +1150,8 @@ function cardHTML(p, i) {{
   const captionClass = p.caption ? 'card-caption' : 'card-caption empty';
   const captionText  = p.caption || '(sin texto)';
   const multiText    = p.images.length > 1 ? `<span class="multi-badge">1/${{p.images.length}}</span>` : '';
+  const catBadges    = (p.categories || []).map(c => CATEGORIES[c]
+    ? `<span class="badge badge-cat">${{escHTML(CATEGORIES[c])}}</span>` : '').join('');
 
   return `<div class="card" data-idx="${{i}}">
     <div class="card-img-wrap" onclick="openLightbox(${{i}})">
@@ -1073,6 +1162,7 @@ function cardHTML(p, i) {{
       <div class="badges">
         <span class="badge badge-year">${{p.year}}</span>
         <span class="badge badge-network" style="background:${{netColor}}">${{netLabel}}</span>
+        ${{catBadges}}
       </div>
       <div class="card-date">${{p.date}}</div>
       <div class="${{captionClass}}">${{escHTML(captionText)}}</div>
@@ -1151,6 +1241,7 @@ def load_facebook_videos():
             'date':          dt.strftime('%d/%m/%Y'),
             'year':          dt.strftime('%Y'),
             'lang':          v.get('lang', ''),
+            'categories':    v.get('categories', []),
         })
     return result
 
@@ -1180,6 +1271,7 @@ def load_twitter_videos():
             'date':          p['date'][8:10] + '/' + p['date'][5:7] + '/' + p['date'][:4],
             'year':          p['year'],
             'lang':          p.get('lang', ''),
+            'categories':    p.get('categories', []),
         })
     return result
 
@@ -1205,6 +1297,7 @@ def load_linkedin_videos():
             'date':          p['date'][8:10] + '/' + p['date'][5:7] + '/' + p['date'][:4],
             'year':          p['year'],
             'lang':          p.get('lang', ''),
+            'categories':    p.get('categories', []),
         })
     return result
 
@@ -1244,22 +1337,19 @@ def generate_videos():
 
     videos_json = json.dumps(all_videos, ensure_ascii=False, separators=(',', ':'))
 
-    # Filtres d'any
-    year_filters_html = ''
-    for y in years:
-        year_filters_html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="year" value="{y}"> {y}</label>\n'
+    year_filters_html = year_filter_html(years)
+    lang_filters_html = lang_filter_html(langs)
+    cat_filters_html  = category_filter_html()
 
-    # Filtres d'idioma — ordre per freqüència
-    lang_labels = {
-        'ES': 'ES 🇪🇸', 'EN': 'EN 🇬🇧', 'DE': 'DE 🇩🇪',
-        'FR': 'FR 🇫🇷', 'CA': 'CAT', 'CAT': 'CAT',
-    }
-    lang_order = ['ES', 'EN', 'DE', 'FR', 'CA', 'CAT']
-    langs_sorted = sorted(langs, key=lambda l: lang_order.index(l) if l in lang_order else 99)
-    lang_filters_html = ''
-    for lang in langs_sorted:
-        label = lang_labels.get(lang, lang)
-        lang_filters_html += f'<label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="lang" value="{esc(lang)}"> {label}</label>\n'
+    source_chips = (
+        '<button class="filter-chip" data-type="source" data-value="youtube" onclick="toggleChip(this)">&#9654; YouTube</button>'
+        '<button class="filter-chip" data-type="source" data-value="linkedin" onclick="toggleChip(this)">LinkedIn</button>'
+        '<button class="filter-chip" data-type="source" data-value="facebook" onclick="toggleChip(this)">Facebook</button>'
+        '<button class="filter-chip" data-type="source" data-value="x:ValidatedID" onclick="toggleChip(this)">x:@ValidatedID</button>'
+        '<button class="filter-chip" data-type="source" data-value="x:VIDsigner" onclick="toggleChip(this)">x:@VIDsigner</button>'
+        '<button class="filter-chip" data-type="source" data-value="x:VIDidentity" onclick="toggleChip(this)">x:@VIDidentity</button>'
+    )
+    source_filters_html = filter_section_html('Fuente', source_chips)
 
     html = f"""<!DOCTYPE html>
 <html lang="es">
@@ -1367,23 +1457,10 @@ def generate_videos():
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="filter-section">
-      <div class="filter-title">Año</div>
-      {year_filters_html}
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Fuente</div>
-      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="youtube"> ▶ YouTube</label>
-      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="linkedin"> 💼 LinkedIn</label>
-      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="facebook"> 📘 Facebook</label>
-      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="x:ValidatedID"> <span style="background:#1d9bf0;color:#fff;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600">x:@ValidatedID</span></label>
-      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="x:VIDsigner"> <span style="background:#7c3aed;color:#fff;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600">x:@VIDsigner</span></label>
-      <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-type="source" value="x:VIDidentity"> <span style="background:#059669;color:#fff;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600">x:@VIDidentity</span></label>
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Idioma</div>
-      {lang_filters_html}
-    </div>
+    {year_filters_html}
+    {source_filters_html}
+    {lang_filters_html}
+    {cat_filters_html}
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
 
@@ -1407,28 +1484,47 @@ def generate_videos():
 
 <script>
 const VIDEOS = {videos_json};
+const CATEGORIES = {json.dumps(CATEGORIES, ensure_ascii=False)};
 
 let filtered = [...VIDEOS];
 
+function toggleSection(header) {{
+  const body  = header.nextElementSibling;
+  const arrow = header.querySelector('.filter-section-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}}
+function toggleChip(chip) {{
+  chip.classList.toggle('active');
+  const section = chip.closest('.filter-section');
+  const badge   = section.querySelector('.filter-section-badge');
+  const n = section.querySelectorAll('.filter-chip.active').length;
+  badge.textContent   = n;
+  badge.style.display = n ? '' : 'none';
+  applyFilters();
+}}
+function clearFilters() {{
+  document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-section-badge').forEach(b => {{
+    b.textContent = ''; b.style.display = 'none';
+  }});
+  applyFilters();
+}}
+
 function applyFilters() {{
-  const years   = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
-  const sources = new Set([...document.querySelectorAll('.filter-cb[data-type=source]:checked')].map(c => c.value));
-  const langs   = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
+  const years   = new Set([...document.querySelectorAll('.filter-chip[data-type=year].active')].map(c => c.dataset.value));
+  const sources = new Set([...document.querySelectorAll('.filter-chip[data-type=source].active')].map(c => c.dataset.value));
+  const langs   = new Set([...document.querySelectorAll('.filter-chip[data-type=lang].active')].map(c => c.dataset.value));
+  const cats    = new Set([...document.querySelectorAll('.filter-chip[data-type=category].active')].map(c => c.dataset.value));
   filtered = VIDEOS.filter(v => {{
     if (years.size   > 0 && !years.has(v.year))     return false;
     if (sources.size > 0 && !sources.has(v.source)) return false;
     if (langs.size   > 0 && !langs.has(v.lang))     return false;
+    if (cats.size    > 0 && !(v.categories || []).some(c => cats.has(c))) return false;
     return true;
   }});
   renderGrid();
 }}
-
-function clearFilters() {{
-  document.querySelectorAll('.filter-cb').forEach(c => c.checked = false);
-  applyFilters();
-}}
-
-document.querySelectorAll('.filter-cb').forEach(cb => cb.addEventListener('change', applyFilters));
 
 function escHTML(s) {{
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1456,6 +1552,8 @@ function cardHTML(v, i) {{
   const langBadge = v.lang
     ? `<span class="badge badge-lang">${{escHTML(v.lang)}}</span>`
     : '';
+  const catBadges = (v.categories || []).map(c => CATEGORIES[c]
+    ? `<span class="badge badge-cat">${{escHTML(CATEGORIES[c])}}</span>` : '').join('');
   return `<div class="card" onclick="openVideo(${{i}})">
     <div class="video-wrap">
       <img data-src="${{escAttr(v.thumbnail_url)}}" src="" alt="${{escAttr(v.title)}}" class="loading">
@@ -1466,6 +1564,7 @@ function cardHTML(v, i) {{
         <span class="badge badge-year">${{escHTML(v.year)}}</span>
         ${{srcBadge}}
         ${{langBadge}}
+        ${{catBadges}}
       </div>
       <div class="card-title">${{escHTML(v.title)}}</div>
       <div class="card-date">${{escHTML(v.date)}}</div>
@@ -1538,16 +1637,11 @@ TWITTER_ACCOUNT_COLORS = {
 }
 
 def account_filter_html(accounts):
-    html = ''
-    for acc in accounts:
-        color = TWITTER_ACCOUNT_COLORS.get(acc, '#666')
-        label = f'x:@{acc}'
-        html += (f'<label class="checkbox-label">'
-                 f'<input type="checkbox" class="filter-cb" data-type="account" value="{esc(acc)}">'
-                 f' <span style="background:{color};color:#fff;border-radius:4px;'
-                 f'padding:1px 7px;font-size:11px;font-weight:600">{label}</span>'
-                 f'</label>\n')
-    return html
+    chips = ''.join(
+        f'<button class="filter-chip" data-type="account" data-value="{esc(acc)}" onclick="toggleChip(this)">x:@{esc(acc)}</button>'
+        for acc in accounts
+    )
+    return filter_section_html('Cuenta', chips)
 
 
 def generate_twitter_page(posts):
@@ -1570,12 +1664,14 @@ def generate_twitter_page(posts):
             'video':        video,
             'url':          p.get('url', ''),
             'content_type': p.get('content_type', 'text'),
+            'categories':   p.get('categories', []),
         })
 
     posts_json   = json.dumps(js_posts, ensure_ascii=False, separators=(',', ':'))
     year_filters = year_filter_html(years)
     acc_filters  = account_filter_html(accounts)
     lang_filters = lang_filter_html(langs)
+    cat_filters  = category_filter_html()
     total        = len(posts)
 
     html = f"""<!DOCTYPE html>
@@ -1657,18 +1753,10 @@ def generate_twitter_page(posts):
 {html_header('Twitter/X', 'Twitter')}
 <div class="layout">
   <aside class="sidebar">
-    <div class="filter-group">
-      <div class="filter-title">ANY</div>
-      {year_filters}
-    </div>
-    <div class="filter-group">
-      <div class="filter-title">COMPTE</div>
-      {acc_filters}
-    </div>
-    <div class="filter-group">
-      <div class="filter-title">IDIOMA</div>
-      {lang_filters}
-    </div>
+    {year_filters}
+    {acc_filters}
+    {lang_filters}
+    {cat_filters}
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
   <main>
@@ -1698,6 +1786,7 @@ let currentPage = 1;
 
 const ACCOUNT_COLORS = {json.dumps(TWITTER_ACCOUNT_COLORS)};
 const LANG_LABELS = {json.dumps(LANG_LABELS)};
+const CATEGORIES = {json.dumps(CATEGORIES, ensure_ascii=False)};
 
 function escHTML(s) {{
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -1740,6 +1829,9 @@ function postHTML(p) {{
   const tweetUrl = p.url || '#';
   const text = escHTML(p.text).replace(/\\n/g, '<br>');
 
+  const catBadges = (p.categories || []).map(c => CATEGORIES[c]
+    ? `<span class="badge badge-cat">${{escHTML(CATEGORIES[c])}}</span>` : '').join('');
+
   return `
   <div class="post-card" id="post-${{p.anchor}}">
     ${{mediaHTML}}
@@ -1748,6 +1840,7 @@ function postHTML(p) {{
         <span class="badge-year">${{escHTML(p.year)}}</span>
         ${{accountBadge(p.account)}}
         ${{lang}}
+        ${{catBadges}}
       </div>
       <div class="post-text">${{text}}</div>
       <div class="post-date">
@@ -1757,15 +1850,40 @@ function postHTML(p) {{
   </div>`;
 }}
 
+function toggleSection(header) {{
+  const body  = header.nextElementSibling;
+  const arrow = header.querySelector('.filter-section-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}}
+function toggleChip(chip) {{
+  chip.classList.toggle('active');
+  const section = chip.closest('.filter-section');
+  const badge   = section.querySelector('.filter-section-badge');
+  const n = section.querySelectorAll('.filter-chip.active').length;
+  badge.textContent   = n;
+  badge.style.display = n ? '' : 'none';
+  applyFilters();
+}}
+function clearFilters() {{
+  document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-section-badge').forEach(b => {{
+    b.textContent = ''; b.style.display = 'none';
+  }});
+  applyFilters();
+}}
+
 function applyFilters() {{
-  const years    = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
-  const accounts = new Set([...document.querySelectorAll('.filter-cb[data-type=account]:checked')].map(c => c.value));
-  const langs    = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
+  const years    = new Set([...document.querySelectorAll('.filter-chip[data-type=year].active')].map(c => c.dataset.value));
+  const accounts = new Set([...document.querySelectorAll('.filter-chip[data-type=account].active')].map(c => c.dataset.value));
+  const langs    = new Set([...document.querySelectorAll('.filter-chip[data-type=lang].active')].map(c => c.dataset.value));
+  const cats     = new Set([...document.querySelectorAll('.filter-chip[data-type=category].active')].map(c => c.dataset.value));
 
   filtered = POSTS.filter(p => {{
     if (years.size    > 0 && !years.has(p.year))        return false;
     if (accounts.size > 0 && !accounts.has(p.account))  return false;
     if (langs.size    > 0 && !langs.has(p.lang))        return false;
+    if (cats.size     > 0 && !(p.categories || []).some(c => cats.has(c))) return false;
     return true;
   }});
 
@@ -1800,11 +1918,6 @@ function goPage(n) {{
   window.scrollTo(0, 0);
 }}
 
-function clearFilters() {{
-  document.querySelectorAll('.filter-cb').forEach(cb => cb.checked = false);
-  applyFilters();
-}}
-
 function openLightbox(embedUrl) {{
   const lb = document.getElementById('lightbox');
   let url = embedUrl;
@@ -1824,8 +1937,6 @@ function closeLightbox(e) {{
     document.getElementById('lightbox').classList.remove('open');
   }}
 }}
-
-document.querySelectorAll('.filter-cb').forEach(cb => cb.addEventListener('change', applyFilters));
 
 // Deep link per anchor
 filtered = POSTS.slice();
@@ -1852,17 +1963,19 @@ def generate_instagram_page(posts):
     js_posts = []
     for p in posts:
         js_posts.append({
-            'anchor': p['anchor'],
-            'date':   p['date'],
-            'year':   p['year'],
-            'lang':   p.get('lang', ''),
-            'text':   p.get('text', ''),
-            'images': p['images'],
+            'anchor':     p['anchor'],
+            'date':       p['date'],
+            'year':       p['year'],
+            'lang':       p.get('lang', ''),
+            'text':       p.get('text', ''),
+            'images':     p['images'],
+            'categories': p.get('categories', []),
         })
 
-    posts_json   = json.dumps(js_posts, ensure_ascii=False, separators=(',', ':'))
-    year_filters = year_filter_html(years)
-    lang_filters = lang_filter_html(langs)
+    posts_json     = json.dumps(js_posts, ensure_ascii=False, separators=(',', ':'))
+    year_filters   = year_filter_html(years)
+    lang_filters   = lang_filter_html(langs)
+    cat_filters    = category_filter_html()
     lang_labels_js = json.dumps(LANG_LABELS, ensure_ascii=False)
 
     html = f"""<!DOCTYPE html>
@@ -1955,14 +2068,9 @@ def generate_instagram_page(posts):
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="filter-section">
-      <div class="filter-title">Año</div>
-      {year_filters}
-    </div>
-    <div class="filter-section">
-      <div class="filter-title">Idioma</div>
-      {lang_filters}
-    </div>
+    {year_filters}
+    {lang_filters}
+    {cat_filters}
     <button class="clear-btn" onclick="clearFilters()">Borrar filtros</button>
   </aside>
 
@@ -1990,6 +2098,7 @@ def generate_instagram_page(posts):
 <script>
 const POSTS = {posts_json};
 const LANG_LABELS = {lang_labels_js};
+const CATEGORIES = {json.dumps(CATEGORIES, ensure_ascii=False)};
 let filtered = [...POSTS];
 let lbPost = null;
 let lbImgIdx = 0;
@@ -2003,22 +2112,40 @@ function fmtDate(d) {{
   return `${{day}}/${{m}}/${{y}}`;
 }}
 
-function applyFilters() {{
-  const years = new Set([...document.querySelectorAll('.filter-cb[data-type=year]:checked')].map(c => c.value));
-  const langs = new Set([...document.querySelectorAll('.filter-cb[data-type=lang]:checked')].map(c => c.value));
-  filtered = POSTS.filter(p =>
-    (years.size === 0 || years.has(p.year)) &&
-    (langs.size === 0 || langs.has(p.lang))
-  );
-  renderGrid();
+function toggleSection(header) {{
+  const body  = header.nextElementSibling;
+  const arrow = header.querySelector('.filter-section-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }}
-
+function toggleChip(chip) {{
+  chip.classList.toggle('active');
+  const section = chip.closest('.filter-section');
+  const badge   = section.querySelector('.filter-section-badge');
+  const n = section.querySelectorAll('.filter-chip.active').length;
+  badge.textContent   = n;
+  badge.style.display = n ? '' : 'none';
+  applyFilters();
+}}
 function clearFilters() {{
-  document.querySelectorAll('.filter-cb').forEach(c => c.checked = false);
+  document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-section-badge').forEach(b => {{
+    b.textContent = ''; b.style.display = 'none';
+  }});
   applyFilters();
 }}
 
-document.querySelectorAll('.filter-cb').forEach(cb => cb.addEventListener('change', applyFilters));
+function applyFilters() {{
+  const years = new Set([...document.querySelectorAll('.filter-chip[data-type=year].active')].map(c => c.dataset.value));
+  const langs = new Set([...document.querySelectorAll('.filter-chip[data-type=lang].active')].map(c => c.dataset.value));
+  const cats  = new Set([...document.querySelectorAll('.filter-chip[data-type=category].active')].map(c => c.dataset.value));
+  filtered = POSTS.filter(p =>
+    (years.size === 0 || years.has(p.year)) &&
+    (langs.size === 0 || langs.has(p.lang)) &&
+    (cats.size  === 0 || (p.categories || []).some(c => cats.has(c)))
+  );
+  renderGrid();
+}}
 
 function renderGrid() {{
   const grid = document.getElementById('grid');
@@ -2040,6 +2167,8 @@ function cardHTML(p, i) {{
   const img = p.images[0];
   const multi = p.images.length > 1 ? `<span class="multi-badge">1/${{p.images.length}}</span>` : '';
   const lang  = p.lang ? `<span class="badge-lang">${{LANG_LABELS[p.lang] || p.lang}}</span>` : '';
+  const catBadges = (p.categories || []).map(c => CATEGORIES[c]
+    ? `<span class="badge badge-cat">${{escHTML(CATEGORIES[c])}}</span>` : '').join('');
   const caption = p.text
     ? escHTML(p.text.substring(0, 120)) + (p.text.length > 120 ? '…' : '')
     : `<span style="color:#4a5a7a;font-style:italic">(sin texto)</span>`;
@@ -2052,6 +2181,7 @@ function cardHTML(p, i) {{
       <div class="post-badges">
         <span class="badge-year">${{p.year}}</span>
         ${{lang}}
+        ${{catBadges}}
       </div>
       <div class="post-date">${{fmtDate(p.date)}}</div>
       <div class="post-text">${{caption}}</div>
